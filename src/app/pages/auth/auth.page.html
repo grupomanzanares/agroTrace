@@ -5,20 +5,20 @@
     <div class="form">
         <app-logo></app-logo>
         <form [formGroup]="loginForm" (ngSubmit)="login()">
-            <app-custom-input
-            icon="person-outline"
-            label="Cédula"
-            type="text"
-            autocomplete="identificacion"
-            [control]="loginForm.controls.identificacion">
-          </app-custom-input>
-          
+            <app-custom-input icon="person-outline" label="Cédula" type="text" autocomplete="identificacion"
+                [control]="loginForm.controls.identificacion">
+            </app-custom-input>
 
-            <div class="error" *ngIf="loginForm.controls.identificacion.errors && loginForm.controls.identificacion.touched">
-                <span *ngIf="loginForm.controls.identificacion.errors?.['required']">La cedula es obligatoria</span>
-                <span *ngIf="loginForm.controls.identificacion.errors?.['minlength']"> La cedula deve tener al menos 8 caracteres</span>
-                <span *ngIf="loginForm.controls.identificacion.errors?.['maxlength']">La cedula deve tener maximo 10 caracteres</span>
-                  <span *ngIf="loginForm.controls.identificacion.errors?.['pattern']">La cedula deve contener solo numeros</span>
+
+            <div class="error"
+                *ngIf="loginForm.controls.identificacion.errors && loginForm.controls.identificacion.touched">
+                <span *ngIf="loginForm.controls.identificacion.errors?.['required']">La cédula es obligatoria</span>
+                <span *ngIf="loginForm.controls.identificacion.errors?.['minlength']"> La cédula debe tener al menos 8
+                    caracteres</span>
+                <span *ngIf="loginForm.controls.identificacion.errors?.['maxlength']">La cédula debe tener maximo 10
+                    caracteres</span>
+                <span *ngIf="loginForm.controls.identificacion.errors?.['pattern']">La cédula debe contener solo
+                    números</span>
             </div>
 
             <app-custom-input icon="lock-closed-outline" label="Contraseña" type="password"

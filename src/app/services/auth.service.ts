@@ -30,11 +30,31 @@ export class AuthService {
 
   logout(): void {
     localStorage.removeItem('token')
-    this.router.navigate(['home'])
+    this.router.navigate(['/auth'])
   }
 
   isAuthenticated(): boolean {
     return !!localStorage.getItem('token')
   }
 
+  private isTokenValid(token: string): boolean {
+    try {
+      const payload = JSON.parse(atob(token.split('.')[1])); // Decodificar el payload del JWT
+      const now = Math.floor(Date.now() / 1000); // Tiempo actual en segundos
+      return payload.exp > now; // Verifica que el token no haya expirado
+    } catch (e) {
+      return false; // Si el token no es válido, retorna false
+    }
+  }
+
+  register(userData: any): Observable<any> {
+    const url = `${this.apiUrl}auth/register`;
+    const headers = { 'Content-Type': 'application/json' };
+    return this.http.post<any>(url, userData, { headers }).pipe(
+      catchError((error) => {
+        console.error('Error en el registro:', error);
+        return throwError(() => new Error('Error en el registro.'));
+      })
+    );
+  }  
 }

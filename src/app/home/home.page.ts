@@ -1,4 +1,6 @@
 import { Component } from '@angular/core';
+import { AuthService } from '../services/auth.service';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-home',
@@ -7,6 +9,18 @@ import { Component } from '@angular/core';
 })
 export class HomePage {
 
-  constructor() {}
+  showMenu: boolean = false;
+
+  constructor(private authService: AuthService, private router: Router ) {
+    this.router.events.subscribe((event: any) => {
+      if (event.url) {
+        this.showMenu = event.url.startsWith('/home/');
+      }
+    })
+  }
+
+  logout() {
+    this.authService.logout(); // Llama al método del servicio para eliminar el token
+  }  
 
 }

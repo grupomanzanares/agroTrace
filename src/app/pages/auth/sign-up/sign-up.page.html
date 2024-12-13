@@ -1,1 +1,76 @@
 <app-header title="Registrarse"></app-header>
+
+<ion-content class="cri">
+    <div class="form">
+        <form [formGroup]="registerForm" (ngSubmit)="register()">
+            <app-custom-input icon="id-card-outline" label="Cédula" type="text" autocomplete="identificacion"
+                [control]="registerForm.controls.identificacion"></app-custom-input>
+
+            <div class="error"
+                *ngIf="registerForm.controls.identificacion.errors && registerForm.controls.identificacion.touched">
+                <span *ngIf="registerForm.controls.identificacion.errors?.['required']">La cédula es obligatoria</span>
+                <span *ngIf="registerForm.controls.identificacion.errors?.['minlength']">La cédula debe tener al menos 8
+                    caracteres</span>
+                <span *ngIf="registerForm.controls.identificacion.errors?.['maxlength']">La cédula debe tener maximo 10
+                    caracteres</span>
+                <span *ngIf="registerForm.controls.identificacion.errors?.['pattern']">La cédula debe contener solo
+                    numeros</span>
+            </div>
+
+            <app-custom-input icon="person-outline" label="Nombre" type="text" autocomplete="name"
+                [control]="registerForm.controls.name">
+            </app-custom-input>
+
+            <div class="error" *ngIf="registerForm.controls.name.errors && registerForm.controls.name.touched">
+                <span *ngIf="registerForm.controls.name.errors?.['required']">El nombre es obligatorio</span>
+                <span *ngIf="registerForm.controls.name.errors?.['minlength']">El nombre debe tener al menos 4
+                    caracteres</span>
+                <span *ngIf="registerForm.controls.name.errors?.['pattern']">El nombre solo debe contener letras</span>
+            </div>
+
+            <app-custom-input icon="mail-outline" label="Email" type="text" autocomplete="email"
+                [control]="registerForm.controls.email"></app-custom-input>
+
+            <div class="error" *ngIf="registerForm.controls.email.errors && registerForm.controls.email.touched">
+                <span *ngIf="registerForm.controls.email.errors?.['required']">El correo electronico es obligatorio</span>
+                <span *ngIf="registerForm.controls.email.errors?.['email']">Por favor ingresa un correo electronico
+                    valido</span>
+            </div>
+
+            <app-custom-input icon="phone-portrait-outline" label="Celular" type="text" autocomplete="celphone"
+                [control]="registerForm.controls.celphone">
+            </app-custom-input>
+
+            <div class="error" *ngIf="registerForm.controls.celphone.errors && registerForm.controls.celphone.touched">
+                <span *ngIf="registerForm.controls.celphone.errors?.['required']">El telefono es obligatorio</span>
+                <span *ngIf="registerForm.controls.celphone.errors?.['minlength']">El telefono debe tener almenos 8
+                    numeros</span>
+                <span *ngIf="registerForm.controls.celphone.errors?.['maxlength']">El telefono debe tener maximo 10
+                    numeros</span>
+                <span *ngIf="registerForm.controls.celphone.errors?.['pattern']">El telefono solo debe contener
+                    numeros</span>
+            </div>
+
+            <app-custom-input icon="lock-closed-outline" label="Contraseña" type="password"
+                [control]="registerForm.controls.password"></app-custom-input>
+
+                <div class="error" *ngIf="registerForm.controls.password.errors && registerForm.controls.password.touched">
+                    <span *ngIf="registerForm.controls.password.errors?.['required']">La contraseña es obligatoria</span>
+                    <span *ngIf="registerForm.controls.password.errors?.['minlength']">La contraseña debe tener almenos 8 caracteres</span>
+                    <span *ngIf="registerForm.controls.password.errors?.['maxlength']">La contraseña debe tener maximo 16 caracteres</span>
+                </div>
+
+            <!-- <app-custom-input icon="lock-closed-outline" label="Confirmar contraseña" type="password"
+                [control]="registerForm.controls.confirmPassword">
+            </app-custom-input>
+
+            <div class="error" *ngIf="registerForm.errors?.['passwordsDontMatch'] && registerForm.touched">
+                <span>Las contraseñas no coinciden.</span>
+              </div>               -->
+
+            <ion-button expand="block" type="submit" [disabled]="registerForm.invalid">
+                Registrar
+              </ion-button>
+        </form>
+    </div>
+</ion-content>

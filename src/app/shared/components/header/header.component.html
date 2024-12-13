@@ -1,14 +1,8 @@
-<ion-header >
-  
+<ion-header>
   <ion-toolbar color="primary">
-    <!-- <ion-buttons slot="start">
-      <ion-button (click)="dismissModal()" *ngIf="isModal">
-        <ion-icon name="close-circle-outline"></ion-icon>
-      </ion-button>
-    </ion-buttons> -->
-
-
-
+    <ion-buttons slot="start" *ngIf="showMenu"> <!-- Botón de menú dinámico -->
+      <ion-menu-button menu="first"></ion-menu-button>
+    </ion-buttons>
     <ion-title class="ion-text-center">
       <strong>{{ title }}</strong>
       <div class="software">
@@ -16,5 +10,4 @@
       </div>
     </ion-title>
   </ion-toolbar>
-
 </ion-header>
