@@ -1,4 +1,4 @@
-<ion-menu side="start" menuId="first" contentId="main-content" [disabled]="false">
+<!-- <ion-menu side="start" menuId="first" contentId="main-content" [disabled]="false">
   <ion-header>
     <ion-toolbar color="primary">
       <ion-title>Menú</ion-title>
@@ -9,6 +9,23 @@
       <ion-item routerLink="/home" (click)="navigateTo('home')">
         <ion-icon slot="start" name="home-outline"></ion-icon>
         <ion-label>Inicio</ion-label>
+      </ion-item>
+    </ion-list>
+  </ion-content>
+</ion-menu> -->
+<ion-menu side="start" menuId="first" contentId="main-content">
+  <ion-header>
+    <ion-toolbar color="tertiary">
+      <ion-title>Menú</ion-title>
+    </ion-toolbar>
+  </ion-header>
+
+  <ion-content>
+    <ion-list>
+      <!-- Generación dinámica de elementos del menú -->
+      <ion-item *ngFor="let item of menuItems" [routerLink]="item.route" routerDirection="root">
+        <ion-icon slot="start" [name]="item.icon"></ion-icon>
+        <ion-label>{{ item.label }}</ion-label>
       </ion-item>
     </ion-list>
   </ion-content>

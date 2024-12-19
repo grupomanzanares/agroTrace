@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
+import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { AuthService } from 'src/app/services/auth.service';
 import { LoadingService } from 'src/app/services/loading.service';
@@ -19,62 +19,35 @@ export class AuthPage implements OnInit {
   password: string = '';
   errorMessage: string = '';
 
-  public loginForm = new FormGroup({ 
+  public loginForm = new FormGroup({
     identificacion: new FormControl(null, [Validators.required, Validators.minLength(1), Validators.maxLength(10), Validators.pattern('^[0-9]*$'),]),
     password: new FormControl(null, [Validators.required]),
   });
 
-
-
-  constructor(private toastService: ToastService , private loadinService: LoadingService, private authService: AuthService, private router: Router) { }
+  constructor(private toastService: ToastService, private loadinService: LoadingService, private authService: AuthService, private router: Router) { }
 
   ngOnInit() {
   }
-
-  // async login() {
-  //   if (this.loginForm.invalid) return; // Asegúrate de que el formulario sea válido
-  
-  //   const { identificacion, password } = this.loginForm.value; // Obtén los valores del formulario
-  
-  //   await this.loadinService.showLoading(); // Mostrar cargador
-  
-  //   this.authService.login(identificacion, password).subscribe({
-  //     next: async (response) => {
-  //       await this.loadinService.hideLoading(); // Ocultar cargador
-  //       const userName = response.user?.name || 'Usuario'
-  //       this.toastService.presentToast(`Bienvenid@ ${userName}`, 'success', 'top')
-  //       this.authService.saveToken(response.token); // Guarda el token
-  //       this.router.navigate(['home']); // Redirige al usuario
-  //       this.loginForm.reset()
-  //     },
-  //     error: async (error) => {
-  //       await this.loadinService.hideLoading(); // Ocultar cargador
-  //       this.toastService.presentToast('Credenciales incorrectas. Por favor, intenta nuevamente', 'danger', 'top')
-  //       console.error('Error de autenticación:', error);
-  //       this.errorMessage = 'Credenciales incorrectas. Por favor, intenta nuevamente.';
-  //     },
-  //   });
-  // }
 
   async login() {
     if (this.loginForm.invalid) {
       this.toastService.presentToast('Por favor completa todos los campos correctamente.', 'danger', 'top');
       return; // Salir si el formulario no es válido
     }
-  
+
     const { identificacion, password } = this.loginForm.value;
-  
+
     await this.loadinService.showLoading(); // Mostrar cargador
-  
+
     this.authService.login(identificacion, password).subscribe({
       next: async (response) => {
         await this.loadinService.hideLoading(); // Ocultar cargador
-  
+
         // Valida que el token esté presente en la respuesta
         if (response.token) {
           const userName = response.user?.name || 'Usuario';
           this.toastService.presentToast(`Bienvenid@ ${userName}`, 'success', 'top');
-          this.authService.saveToken(response.token); // Guarda el token en localStorage
+          this.authService.saveToken(response.token, userName); // Guarda el token en localStorage
           this.router.navigate(['home']); // Redirige al usuario
           this.loginForm.reset(); // Limpia el formulario
         } else {
@@ -84,17 +57,17 @@ export class AuthPage implements OnInit {
       },
       error: async (error) => {
         await this.loadinService.hideLoading(); // Ocultar cargador
-  
+
         // Muestra un mensaje amigable al usuario
         this.toastService.presentToast('Credenciales incorrectas. Por favor, intenta nuevamente.', 'danger', 'top');
         console.error('Error de autenticación:', error);
-  
+
         // Opcional: Establecer un mensaje de error en la interfaz
         this.errorMessage = 'Credenciales incorrectas. Por favor, intenta nuevamente.';
       },
     });
   }
-  
+
 
 }
 

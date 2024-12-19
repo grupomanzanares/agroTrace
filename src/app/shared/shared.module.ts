@@ -6,13 +6,14 @@ import { LogoComponent } from './components/logo/logo.component';
 import { IonicModule } from '@ionic/angular';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { SideMenuComponent } from './components/side-menu/side-menu.component';
+import { RouterModule } from '@angular/router';
 // import { AddUpdateProductComponent } from './components/add-update-product/add-update-product.component';
 
 
 
 @NgModule({
   declarations: [ HeaderComponent, CustomInputComponent, LogoComponent, SideMenuComponent],
-  imports: [ CommonModule, IonicModule, ReactiveFormsModule, FormsModule ],
+  imports: [ CommonModule, IonicModule, ReactiveFormsModule, FormsModule, RouterModule ],
   exports:[HeaderComponent, CustomInputComponent, LogoComponent, SideMenuComponent, ReactiveFormsModule]
 })
 

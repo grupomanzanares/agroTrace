@@ -11,6 +11,14 @@ const routes: Routes = [
   {
     path: 'actividades',
     loadChildren: () => import('./actividades/actividades.module').then( m => m.ActividadesPageModule), canActivate: [AuthGuard],
+  },
+  {
+    path: 'categoria',
+    loadChildren: () => import('./categoria/categoria.module').then( m => m.CategoriaPageModule), canActivate: [AuthGuard],
+  },
+  {
+    path: 'uni-medida',
+    loadChildren: () => import('./uni-medida/uni-medida.module').then( m => m.UniMedidaPageModule), canActivate: [AuthGuard],
   }
 
 ];

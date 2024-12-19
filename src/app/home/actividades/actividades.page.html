@@ -1,7 +1,93 @@
-<app-header title="Actividades" [showMenu]="true"></app-header> <!-- Botón del menú habilitado -->
-
-<app-side-menu></app-side-menu> <!-- Menú lateral -->
+<app-header title="Actividades" [showMenu]="true"></app-header>
+<app-side-menu [section]="'actividades'"></app-side-menu>
 
 <ion-content id="main-content">
-    <h1>hola</h1>
+  <ion-grid fixed>
+    <div *ngIf="!showForm">
+      <ion-row>
+        <ion-col size="12">
+          <ion-card *ngFor="let item of actividad">
+            <ion-card-header>
+              <ion-card-title>{{ item.nombre }}</ion-card-title>
+              <ion-card-subtitle>
+                <samp>ID: {{ item.id }}</samp>
+              </ion-card-subtitle>
+            </ion-card-header>
+            <ion-card-content>
+              <span>Descripcion: {{ item.descripcion }}</span>
+              <ion-item>
+                <ion-icon *ngIf="item.controlPorLote" slot="end" name="checkmark-circle-outline" color="success"></ion-icon>
+                <ion-icon *ngIf="!item.controlPorLote" slot="end" name="close-circle-outline" color="danger"></ion-icon>
+              </ion-item>
+              
+            </ion-card-content>
+            <ion-card>
+              <ion-button fill="clear" color="success">
+                <ion-icon name="create-outline" slot="start"></ion-icon> Editar
+              </ion-button>
+              <ion-button fill="clear" color="danger">
+                <ion-icon name="trash-outline" slot="start"></ion-icon> Eliminar
+              </ion-button>
+            </ion-card>
+          </ion-card>
+        </ion-col>
+      </ion-row>
+    </div>
+
+    <div *ngIf="showForm">
+      <ion-grid fixed>
+        <ion-row>
+          <ion-col size="12">
+            <ion-item>
+              <ion-input class="ion-margin" label="Ingresa el nombre de la actividad" label-placement="floating"
+                fill="outline" type="text" [(ngModel)]="objactividad.nombre"></ion-input>
+            </ion-item>
+          </ion-col>
+          <ion-col size="12">
+            <ion-item>
+              <ion-input class="ion-margin" label="Ingresa una descripcion" label-placement="floating" fill="outline"
+                type="text" [(ngModel)]="objactividad.descripcion"></ion-input>
+            </ion-item>
+          </ion-col>
+          <ion-col size="12">
+            <ion-item>
+              <ion-label class="ion-margin">Control por lote</ion-label>
+              <ion-radio-group [(ngModel)]="objactividad.controlPorLote" name="control">
+                <ion-radio slot="start" [value]="1" class="ion-margin">Si</ion-radio>
+                <ion-radio slot="start" [value]="0">No</ion-radio>
+              </ion-radio-group>
+            </ion-item>
+          </ion-col>
+          <ion-col size="12">
+            <ion-item class="ion-margin">
+              <ion-select interface="popover" placeholder="Seleccionar Unidad" [(ngModel)]="objactividad.unidadId">
+                <ion-select-option *ngFor="let row of unidad" [value]="row.id">
+                  {{ row.nombre }}
+                </ion-select-option>
+              </ion-select>
+            </ion-item>
+          </ion-col>
+          <ion-col size="12">
+            <ion-item class="ion-margin">
+              <ion-select interface="popover" placeholder="Selecciona Sub categoria"
+                [(ngModel)]="objactividad.subCategoriaId">
+                <ion-select-option *ngFor="let row of subcategoria" [value]="row.id">
+                  {{ row.nombre }}
+                </ion-select-option>
+              </ion-select>
+            </ion-item>
+          </ion-col>
+        </ion-row>
+      </ion-grid>
+      <ion-button class="ion-margin" expand="block" color="primary" (click)="create()">Guardar</ion-button>
+      <ion-button class="ion-margin" expand="block" color="danger" (click)="onCloseForm()">Volver</ion-button>
+    </div>
+
+  </ion-grid>
+
+  <ion-fab slot="fixed" vertical="bottom" horizontal="end" *ngIf="!showForm">
+    <ion-fab-button (click)="onShowForm()" size="small" color="success">
+      <ion-icon name="add"></ion-icon>
+    </ion-fab-button>
+  </ion-fab>
 </ion-content>

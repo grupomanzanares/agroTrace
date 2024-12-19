@@ -24,12 +24,14 @@ export class AuthService {
     );
   }
 
-  saveToken(token: string): void {
-    localStorage.setItem('token', token)
+  saveToken(token: string, userName: string): void {
+    localStorage.setItem('token', token);
+    localStorage.setItem('userName', userName)
   }
 
   logout(): void {
     localStorage.removeItem('token')
+    localStorage.removeItem('userName')
     this.router.navigate(['/auth'])
   }
 
@@ -37,14 +39,19 @@ export class AuthService {
     return !!localStorage.getItem('token')
   }
 
-  private isTokenValid(token: string): boolean {
-    try {
-      const payload = JSON.parse(atob(token.split('.')[1])); // Decodificar el payload del JWT
-      const now = Math.floor(Date.now() / 1000); // Tiempo actual en segundos
-      return payload.exp > now; // Verifica que el token no haya expirado
-    } catch (e) {
-      return false; // Si el token no es válido, retorna false
-    }
+  // private isTokenValid(token: string): boolean {
+  //   try {
+  //     const payload = JSON.parse(atob(token.split('.')[1])); // Decodificar el payload del JWT
+  //     const now = Math.floor(Date.now() / 1000); // Tiempo actual en segundos
+  //     return payload.exp > now; // Verifica que el token no haya expirado
+  //   } catch (e) {
+  //     return false; // Si el token no es válido, retorna false
+  //   }
+  // }
+
+
+  getLoggedUserName(): string {
+    return localStorage.getItem('userName') || 'Usuario';
   }
 
   register(userData: any): Observable<any> {
@@ -56,5 +63,5 @@ export class AuthService {
         return throwError(() => new Error('Error en el registro.'));
       })
     );
-  }  
+  }
 }
