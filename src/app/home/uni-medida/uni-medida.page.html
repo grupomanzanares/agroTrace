@@ -1,45 +1,72 @@
 <app-header title="Unidad medida" [showMenu]="true"></app-header>
 <app-side-menu [section]="'actividades'"></app-side-menu>
+
 <ion-content id="main-content">
   <ion-grid fixed>
     <div *ngIf="!showForm">
       <ion-row>
-        <ion-col size="12">
-          <ion-card *ngFor="let item of unidades">
+        <ion-col size="6" *ngFor="let item of unidades">
+          <ion-card>
             <ion-card-header>
               <ion-card-title>{{ item.nombre }}</ion-card-title>
               <ion-card-subtitle>
-                <span>ID: {{ item.id }}</span>
+                <strong>ID: </strong> {{ item.id }}
               </ion-card-subtitle>
             </ion-card-header>
             <ion-card-content>
-              <samp>Descripcion: {{ item.descripcion }}</samp>
+              <p><strong>Descripcion:</strong> {{ item.descripcion }}</p>
             </ion-card-content>
+            <ion-card>
+              <ion-row class="ion-justify-content-center">
+                <ion-col size="auto">
+                  <ion-button fill="clear" color="warning">
+                    <ion-icon name="create-outline" slot="start"></ion-icon> Editar
+                  </ion-button>
+                </ion-col>
+                <ion-col size="auto">
+                  <ion-button fill="clear" color="danger">
+                    <ion-icon name="trash-outline" slot="start"></ion-icon> Eliminar
+                  </ion-button>
+                </ion-col>
+              </ion-row>
+            </ion-card>
           </ion-card>
         </ion-col>
       </ion-row>
     </div>
 
-    <div *ngIf="showForm">
+    <div *ngIf="showForm" [formGroup]="inputs">
       <ion-grid fixed>
         <ion-row>
           <ion-col size="12">
-            <ion-item>
-              <ion-input class="ion-margin" label="Ingresa el nombre de la unidad" label-placement="floating"
-              fill="outline" type="text" [(ngModel)]="objunidad.nombre"></ion-input>
-            </ion-item>
-          </ion-col>
-          <ion-col size="12">
-            <ion-item>
-              <ion-input class="ion-margin" label="Ingresa la descripcion" label-placement="floating"
-              fill="outline" type="text" [(ngModel)]="objunidad.descripcion"></ion-input>
-            </ion-item>
+            <app-custom-input icon="person-outline" label="Ingresa el nombre de la unidad" type="text"
+              autocomplete="nombre" [control]="inputs.controls.nombre">
+            </app-custom-input>
+            <div class="error" *ngIf="inputs.controls.nombre.errors && inputs.controls.nombre.touched">
+              <samp *ngIf="inputs.controls.nombre.errors?.['required']">El nombre es obligatorio</samp>
+              <span *ngIf="inputs.controls.nombre.errors?.['minlength']">El nombre debe tener al menos 5
+                caracteres</span>
+              <span *ngIf="inputs.controls.nombre.errors?.['maxlength']">El nombre debe tener máximo 30
+                caracteres</span>
+            </div>
+
+            <app-custom-input icon="document-text-outline" label="Ingresa una descripcion" type="text"
+              autocomplete="descripcion" [control]="inputs.controls.descripcion">
+            </app-custom-input>
+            <div class="error" *ngIf="inputs.controls.descripcion.errors && inputs.controls.descripcion.touched">
+              <samp *ngIf="inputs.controls.descripcion.errors?.['required']">La descripción es obligatoria</samp>
+              <span *ngIf="inputs.controls.descripcion.errors?.['minlength']">La descripción debe tener al menos 5
+                caracteres</span>
+              <span *ngIf="inputs.controls.descripcion.errors?.['maxlength']">La descripción debe tener máximo 150
+                caracteres</span>
+            </div>
           </ion-col>
         </ion-row>
       </ion-grid>
       <ion-button class="ion-margin" expand="block" color="primary" (click)="create()">Guardar</ion-button>
       <ion-button class="ion-margin" expand="block" color="danger" (click)="onCloseForm()">Volver</ion-button>
     </div>
+
 
   </ion-grid>
 

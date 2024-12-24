@@ -3,6 +3,7 @@ import { SucursalService } from 'src/app/services/sucursal.service';
 import { AuthService } from 'src/app/services/auth.service';
 import { CategoriaService } from 'src/app/services/categoria.service';
 import { ToastService } from 'src/app/services/toast.service';
+import { FormControl, FormGroup, Validators } from '@angular/forms';
 
 @Component({
   selector: 'app-categoria',
@@ -15,14 +16,12 @@ export class CategoriaPage implements OnInit {
   sucursales: any[] = [];
   categorias: any[] = [];
 
-  // Datos del formulario
-  objcategoria = {
-    nombre: '',
-    descripcion: '',
-    sucursalId: null,
-    usuario: '',
-    usuarioMod: ''
-  };
+  public inputs = new FormGroup({
+    nombre: new FormControl('', [Validators.required, Validators.minLength(5), Validators.maxLength(30)]),
+    descripcion: new FormControl('', [Validators.required, Validators.minLength(5), Validators.maxLength(150)]),
+    sucursalId: new FormControl(null, [Validators.required]) // Nuevo control para el select
+  });
+  
 
   constructor(
     private sucursalService: SucursalService,
@@ -40,12 +39,7 @@ export class CategoriaPage implements OnInit {
   onShowForm() {
     console.log('Showing form');
     this.showForm = true;
-
-    // Llenar los campos usuario y usuarioMod con el nombre del usuario actual
-    const userName = this.authService.getLoggedUserName();
-    this.objcategoria.usuario = userName;
-    this.objcategoria.usuarioMod = userName;
-
+    this.inputs.reset();
     this.getSucursales();
   }
 
@@ -77,22 +71,49 @@ export class CategoriaPage implements OnInit {
     });
   }
 
-  onSaveForm() {
-    console.log('Datos a guardar:', this.objcategoria);
-
-    this.categoriaService.createCategoria(this.objcategoria).subscribe({
-      next: (response) => {
-        console.log('Categoria guardada correctamente: ', response)
-        this.toastService.presentToast('Categoria creada exitosamente', 'success', 'top')
-        this.showForm = false;
-
-        // Actualizar la lista de categorías
-        this.getCategorias();
-      },
-      error: (error) => {
-        console.error('Error al guardar la categoria: ', error);
-        this.toastService.presentToast('Error al crear la categoria', 'danger', 'top')
+  onSaveForm(){
+    if(this.inputs.valid){
+      const newCate = {
+        ...this.inputs.value,
+        usuario: this.authService.getLoggedUserName(),
+        usuarioMod: this.authService.getLoggedUserName()
       }
-    });
+      console.log('Datos para guardar:', newCate)
+
+      this.categoriaService.createCategoria(newCate).subscribe({
+        next: (response) => {
+          console.log('Categoria guardada correctamente:', response);
+          this.toastService.presentToast('Categoria creada exitosamente', 'success', 'top');
+          this.showForm = false;
+          this.getCategorias()
+        },
+        error: (error) => {
+          console.error('Error al guardar la Categoria:', error);
+          console.error('Error al crear la Categoria', 'danger', 'top')
+        }
+      });
+    }else{
+      console.error('Formulario inválido:', this.inputs.errors);
+      this.toastService.presentToast('Por favor, completa todos los campos correctamente', 'danger', 'top');
+    }
   }
+
+  // onSaveForm() {
+  //   console.log('Datos a guardar:', this.objcategoria);
+
+  //   this.categoriaService.createCategoria(this.objcategoria).subscribe({
+  //     next: (response) => {
+  //       console.log('Categoria guardada correctamente: ', response)
+  //       this.toastService.presentToast('Categoria creada exitosamente', 'success', 'top')
+  //       this.showForm = false;
+
+  //       // Actualizar la lista de categorías
+  //       this.getCategorias();
+  //     },
+  //     error: (error) => {
+  //       console.error('Error al guardar la categoria: ', error);
+  //       this.toastService.presentToast('Error al crear la categoria', 'danger', 'top')
+  //     }
+  //   });
+  // }
 }

@@ -20,7 +20,7 @@ export class AuthPage implements OnInit {
   errorMessage: string = '';
 
   public loginForm = new FormGroup({
-    identificacion: new FormControl(null, [Validators.required, Validators.minLength(1), Validators.maxLength(10), Validators.pattern('^[0-9]*$'),]),
+    identificacion: new FormControl(null, [Validators.required, Validators.minLength(8), Validators.maxLength(10), Validators.pattern('^[0-9]*$'),]),
     password: new FormControl(null, [Validators.required]),
   });
 
