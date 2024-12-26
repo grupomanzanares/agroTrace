@@ -19,7 +19,11 @@ const routes: Routes = [
   {
     path: 'uni-medida',
     loadChildren: () => import('./uni-medida/uni-medida.module').then( m => m.UniMedidaPageModule), canActivate: [AuthGuard],
+  },  {
+    path: 'subcategoria',
+    loadChildren: () => import('./subcategoria/subcategoria.module').then( m => m.SubcategoriaPageModule)
   }
+
 
 ];
 

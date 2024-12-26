@@ -40,7 +40,7 @@ export class CategoriaService {
     return this.http.post(url, categoria, { headers }).pipe(
       catchError((error) => {
         console.error('Error al crear la categoria:', error);
-        return throwError(() => new Error('Error al crear la cateegoria'))
+        return throwError(() => new Error('Error al crear la categoria'))
       })
     )
   }

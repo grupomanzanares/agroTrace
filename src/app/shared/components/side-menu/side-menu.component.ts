@@ -22,7 +22,8 @@ export class SideMenuComponent implements OnInit {
           { label: 'Inicio', icon: 'home-outline', route: '/home' },
           { label: 'Actividad', icon: 'add-circle-outline', route: '/home/actividades' },
           { label: 'Categoría', icon: 'layers-outline', route: '/home/categoria' },
-          { label: 'Unidad de Medida', icon: 'walk-outline', route: '/home/uni-medida' }
+          { label: 'Unidad de Medida', icon: 'walk-outline', route: '/home/uni-medida' },
+          { label: 'Sub Categoria', icon: 'apps-outline', route: '/home/subcategoria' }
         ];
         break;
 

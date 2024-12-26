@@ -66,7 +66,7 @@ export class CategoriaPage implements OnInit {
         this.categorias = data;
       },
       error: (error) => {
-        console.error('Error al cargar sucursales', error)
+        console.error('Error al cargar las categorias', error)
       }
     });
   }
@@ -97,23 +97,4 @@ export class CategoriaPage implements OnInit {
       this.toastService.presentToast('Por favor, completa todos los campos correctamente', 'danger', 'top');
     }
   }
-
-  // onSaveForm() {
-  //   console.log('Datos a guardar:', this.objcategoria);
-
-  //   this.categoriaService.createCategoria(this.objcategoria).subscribe({
-  //     next: (response) => {
-  //       console.log('Categoria guardada correctamente: ', response)
-  //       this.toastService.presentToast('Categoria creada exitosamente', 'success', 'top')
-  //       this.showForm = false;
-
-  //       // Actualizar la lista de categorías
-  //       this.getCategorias();
-  //     },
-  //     error: (error) => {
-  //       console.error('Error al guardar la categoria: ', error);
-  //       this.toastService.presentToast('Error al crear la categoria', 'danger', 'top')
-  //     }
-  //   });
-  // }
 }

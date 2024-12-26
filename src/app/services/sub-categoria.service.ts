@@ -27,4 +27,21 @@ export class SubCategoriaService {
     )
   }
 
+  create(subcategoria: any): Observable<any>{
+    const url =`${this.apiUrl}act-subcategoria/create`
+    const token = localStorage.getItem('token')
+
+    const headers = new HttpHeaders({
+      Authorization: `Bearer ${token}`,
+      'Content-Type': 'application/json',
+    })
+
+    return this.http.post(url, subcategoria, { headers }).pipe(
+      catchError((error) => {
+        console.error('Error al crear la subcategoria:', error);
+        return throwError(() => new Error('Error al crear la subcategoria'))
+      })
+    )
+  }
+
 }
