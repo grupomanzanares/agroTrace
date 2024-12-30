@@ -14,27 +14,26 @@
               </ion-card-subtitle>
             </ion-card-header>
             <ion-card-content>
-              <p><strong>Descripcion:</strong> {{ item.descripcion }}</p>
-              <p> <span class="ion-margin-end">Control por lotes</span>
-                <ion-icon *ngIf="item.controlPorLote" slot="end" name="checkmark-circle-outline"
-                  color="success"></ion-icon>
-                <ion-icon *ngIf="!item.controlPorLote" slot="end" name="close-circle-outline" color="danger"></ion-icon>
+              <p><strong>Descripción:</strong> {{ item.descripcion }}</p>
+              <p>
+                <strong>Control por lotes:</strong> 
+                {{ item.controlPorLote ? 'Sí' : 'No' }}
               </p>
+              <p><strong>Unidad:</strong> {{ item.unidadId }}</p>
+              <p><strong>Subcategoría:</strong> {{ item.subCategoriaId }}</p>
             </ion-card-content>
-            <ion-card>
-              <ion-row class="ion-justify-content-center">
-                <ion-col size="auto">
-                  <ion-button fill="clear" color="warning">
-                    <ion-icon name="create-outline" slot="start"></ion-icon> Editar
-                  </ion-button>
-                </ion-col>
-                <ion-col size="auto">
-                  <ion-button fill="clear" color="danger">
-                    <ion-icon name="trash-outline" slot="start"></ion-icon> Eliminar
-                  </ion-button>
-                </ion-col>
-              </ion-row>
-            </ion-card>
+            <ion-row class="ion-justify-content-center">
+              <ion-col size="auto">
+                <ion-button fill="clear" color="warning" (click)="editActividad(item)">
+                  <ion-icon name="create-outline" slot="start"></ion-icon> Editar
+                </ion-button>
+              </ion-col>
+              <ion-col size="auto">
+                <ion-button fill="clear" color="danger" (click)="deleteActividad(item.id)">
+                  <ion-icon name="trash-outline" slot="start"></ion-icon> Eliminar
+                </ion-button>                
+              </ion-col>
+            </ion-row>
           </ion-card>
         </ion-col>
       </ion-row>
@@ -44,26 +43,18 @@
       <ion-grid fixed>
         <ion-row>
           <ion-col size="12">
-            <app-custom-input
-              icon="person-outline"
-              label="Ingresa el nombre de la actividad"
-              type="text"
-              autocomplete="nombre"
-              [control]="inputs.controls.nombre">
+            <app-custom-input icon="person-outline" label="Ingresa el nombre de la actividad" type="text"
+              autocomplete="nombre" [control]="inputs.controls.nombre">
             </app-custom-input>
             <div class="error" *ngIf="inputs.controls.nombre.errors && inputs.controls.nombre.touched">
               <span *ngIf="inputs.controls.nombre.errors?.['required']">El nombre es obligatorio</span>
               <span *ngIf="inputs.controls.nombre.errors?.['minlength']">Debe tener al menos 3 caracteres</span>
             </div>
           </ion-col>
-    
+
           <ion-col size="12">
-            <app-custom-input
-              icon="document-text-outline"
-              label="Ingresa una descripción"
-              type="text"
-              autocomplete="descripcion"
-              [control]="inputs.controls.descripcion">
+            <app-custom-input icon="document-text-outline" label="Ingresa una descripción" type="text"
+              autocomplete="descripcion" [control]="inputs.controls.descripcion">
             </app-custom-input>
             <div class="error" *ngIf="inputs.controls.descripcion.errors && inputs.controls.descripcion.touched">
               <span *ngIf="inputs.controls.descripcion.errors?.['required']">La descripción es obligatoria</span>
@@ -71,7 +62,7 @@
               <span *ngIf="inputs.controls.descripcion.errors?.['maxlength']">Máximo 150 caracteres</span>
             </div>
           </ion-col>
-    
+
           <ion-col size="12">
             <ion-item>
               <ion-label>Control por lote</ion-label>
@@ -81,7 +72,7 @@
               </ion-radio-group>
             </ion-item>
           </ion-col>
-    
+
           <ion-col size="12">
             <ion-item>
               <ion-select interface="popover" placeholder="Seleccionar Unidad" formControlName="unidadId">
@@ -94,7 +85,7 @@
               <span *ngIf="inputs.controls.unidadId.errors?.['required']">Debe seleccionar una unidad</span>
             </div>
           </ion-col>
-    
+
           <ion-col size="12">
             <ion-item>
               <ion-select interface="popover" placeholder="Selecciona Sub Categoría" formControlName="subCategoriaId">
@@ -108,10 +99,10 @@
             </div>
           </ion-col>
         </ion-row>
-        <ion-button expand="block" color="primary" (click)="create()">Guardar</ion-button>
-        <ion-button expand="block" color="danger" (click)="onCloseForm()">Volver</ion-button>
+        <ion-button class="ion-margin-top" expand="block" color="primary" (click)="createOrUpdate()">Guardar</ion-button>
+        <ion-button class="ion-margin-top" expand="block" color="danger" (click)="onCloseForm()">Volver</ion-button>
       </ion-grid>
-    </div>  
+    </div>
 
   </ion-grid>
 

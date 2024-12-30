@@ -16,20 +16,18 @@
             <ion-card-content>
               <p><strong>Descripcion:</strong> {{ item.descripcion }}</p>
             </ion-card-content>
-            <ion-card>
               <ion-row class="ion-justify-content-center">
                 <ion-col size="auto">
-                  <ion-button fill="clear" color="warning">
+                  <ion-button fill="clear" color="warning" (click)="update(item)">
                     <ion-icon name="create-outline" slot="start"></ion-icon> Editar
                   </ion-button>
                 </ion-col>
                 <ion-col size="auto">
-                  <ion-button fill="clear" color="danger">
+                  <ion-button fill="clear" color="danger" (click)="delete(item.id)">
                     <ion-icon name="trash-outline" slot="start"></ion-icon> Eliminar
                   </ion-button>
                 </ion-col>
               </ion-row>
-            </ion-card>
           </ion-card>
         </ion-col>
       </ion-row>
@@ -63,7 +61,7 @@
           </ion-col>
         </ion-row>
       </ion-grid>
-      <ion-button class="ion-margin" expand="block" color="primary" (click)="create()">Guardar</ion-button>
+      <ion-button class="ion-margin" expand="block" color="primary" (click)="createOrUpdate()">Guardar</ion-button>
       <ion-button class="ion-margin" expand="block" color="danger" (click)="onCloseForm()">Volver</ion-button>
     </div>
 
