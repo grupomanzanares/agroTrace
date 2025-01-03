@@ -56,7 +56,7 @@ export class SubcategoriaPage implements OnInit {
   getCate() {
     this.categoriaService.getCategoria().subscribe({
       next: (data) => {
-        console.log('Datos de categorias', data)
+        // console.log('Datos de categorias', data)
         this.categorias = data;
       },
       error: (error) => {
@@ -68,7 +68,7 @@ export class SubcategoriaPage implements OnInit {
   getSubcate() {
     this.subcatService.getSubCategoria().subscribe({
       next: (data) => {
-        console.log('Sub categoria', data)
+        // console.log('Sub categoria', data)
         this.subcategoria = data
       },
       error: (error) => {
@@ -93,14 +93,14 @@ export class SubcategoriaPage implements OnInit {
         data.id = this.selectedSub.id; // Agrega el ID si estás editando
       }
 
-      console.log(this.edit ? 'Datos para actualizar:' : 'Datos para crear', data)
+      // console.log(this.edit ? 'Datos para actualizar:' : 'Datos para crear', data)
 
       const request = this.edit ? this.subcatService.update(data) : this.subcatService.create(data)
 
       request.subscribe({
         next: (response) => {
           const message = this.edit ? 'Sub categoria actualizada exitosamente' : 'Sub categoria creada exitosamente'
-          console.log(message, response)
+          // console.log(message, response)
           this.toastService.presentToast(message, 'success', 'top')
           this.showForm = false
           this.getSubcate()
@@ -119,7 +119,7 @@ export class SubcategoriaPage implements OnInit {
   }
 
   update(subcategoria: any) {
-    console.log(subcategoria.id)
+    // console.log(subcategoria.id)
     this.inputs.patchValue({
       nombre: subcategoria.nombre,
       descripcion: subcategoria.descripcion,
@@ -144,7 +144,7 @@ export class SubcategoriaPage implements OnInit {
 
     this.subcatService.delete(id).subscribe({
       next: () => {
-        console.log(`Sub categoria con ID ${id} eliminado exitosamente`);
+        // console.log(`Sub categoria con ID ${id} eliminado exitosamente`);
         this.toastService.presentToast('Sub categoria eliminada exitosamente', 'success', 'top')
         this.getSubcate()
       },

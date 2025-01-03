@@ -98,7 +98,7 @@ export class ActividadesPage implements OnInit {
     if (this.inputs.valid) {
       const actividadData: any = {
         ...this.inputs.value,
-        usuarioMod: this.authService.getLoggedUserName(),
+        usuarioMod: this.authService.getLoggedUserName()
       };
 
       // Solo incluye el campo `usuario` si estás creando
@@ -110,7 +110,7 @@ export class ActividadesPage implements OnInit {
         actividadData.id = this.selectedActividad.id; // Agrega el ID si estás editando
       }
 
-      console.log(this.update ? 'Datos para actualizar:' : 'Datos para crear:', actividadData);
+      // console.log(this.update ? 'Datos para actualizar:' : 'Datos para crear:', actividadData);
 
       const request = this.update
         ? this.actividadService.update(actividadData)
@@ -121,7 +121,7 @@ export class ActividadesPage implements OnInit {
           const message = this.update
             ? 'Actividad actualizada exitosamente'
             : 'Actividad creada exitosamente';
-          console.log(message, response);
+          // console.log(message, response);
           this.toastService.presentToast(message, 'success', 'top');
           this.showForm = false;
           this.getActividad();
@@ -146,7 +146,7 @@ export class ActividadesPage implements OnInit {
   }
 
   editActividad(actividad: any) {
-    console.log(actividad.id)
+    // console.log(actividad.id)
     this.inputs.patchValue({
       nombre: actividad.nombre,
       descripcion: actividad.descripcion,
@@ -161,7 +161,7 @@ export class ActividadesPage implements OnInit {
 
   deleteActividad(id: number) {
     if (!id) {
-      console.error('El ID no es válido para eliminar');
+      // console.error('El ID no es válido para eliminar');
       this.toastService.presentToast('ID inválido para eliminar', 'danger', 'top');
       return;
     }
@@ -174,7 +174,7 @@ export class ActividadesPage implements OnInit {
 
     this.actividadService.delete(id).subscribe({
       next: () => {
-        console.log(`Actividad con ID ${id} eliminada exitosamente`);
+        // console.log(`Actividad con ID ${id} eliminada exitosamente`);
         this.toastService.presentToast('Actividad eliminada exitosamente', 'success', 'top');
         this.getActividad(); // Refresca la lista de actividades después de eliminar
       },

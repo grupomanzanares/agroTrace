@@ -22,6 +22,10 @@ const routes: Routes = [
   },  {
     path: 'subcategoria',
     loadChildren: () => import('./subcategoria/subcategoria.module').then( m => m.SubcategoriaPageModule)
+  },
+  {
+    path: 'programacion',
+    loadChildren: () => import('./programacion/programacion.module').then( m => m.ProgramacionPageModule)
   }
 
 

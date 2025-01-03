@@ -58,7 +58,7 @@ export class CategoriaPage implements OnInit {
     this.sucursalService.getSucursal().subscribe({
       next: (data) => {
         this.sucursales = data;
-        console.log('Datos de sucursales', data);
+        // console.log('Datos de sucursales', data);
       },
       error: (error) => {
         console.error('Error al cargar sucursales', error);
@@ -69,7 +69,7 @@ export class CategoriaPage implements OnInit {
   getCategorias() {
     this.categoriaService.getCategoria().subscribe({
       next: (data) => {
-        console.log('Categorias', data)
+        // console.log('Categorias', data)
         this.categorias = data;
       },
       error: (error) => {
@@ -84,16 +84,16 @@ export class CategoriaPage implements OnInit {
         ...this.inputs.value,
         usuarioMod: this.authService.getLoggedUserName()
       }
-      // Solo incluye el campo `usuario` si estás creando
+      
       if (!this.edit) {
-        data.usuario = this.authService.getLoggedUserName(); // Usuario que crea
+        data.usuario = this.authService.getLoggedUserName(); 
       }
 
       if (this.edit) {
-        data.id = this.selectedCategoria.id; // Agrega el ID si estás editando
+        data.id = this.selectedCategoria.id; 
       }
 
-      console.log(this.edit ? 'Datos para actualizar:' : 'Datos para  crear', data)
+      // console.log(this.edit ? 'Datos para actualizar:' : 'Datos para  crear', data)
 
       const request = this.edit ? this.categoriaService.update(data) : this.categoriaService.createCategoria(data)
 
@@ -101,7 +101,7 @@ export class CategoriaPage implements OnInit {
 
         next: (response) => {
           const message = this.edit ? 'Categoria actualizada exitosamente' : 'Categoria creada exitosamente';
-          console.log(message, response);
+          // console.log(message, response);
           this.toastService.presentToast(message, 'success', 'top');
           this.showForm = false
           this.getCategorias();
@@ -153,7 +153,7 @@ export class CategoriaPage implements OnInit {
 
     this.categoriaService.delete(id).subscribe({
       next: () => {
-        console.log(`Categoria con ID ${id} eliminado exitosamente`);
+        // console.log(`Categoria con ID ${id} eliminado exitosamente`);
         this.toastService.presentToast('Categoria eliminada exitosamente', 'success', 'top')
         this.getCategorias()
       },

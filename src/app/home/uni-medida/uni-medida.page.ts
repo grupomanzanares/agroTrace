@@ -46,7 +46,7 @@ export class UniMedidaPage implements OnInit {
   getUnidad() {
     this.uniMedi.getUnidad().subscribe({
       next: (data) => {
-        console.log('Datos de Unidades', data);
+        // console.log('Datos de Unidades', data);
         this.unidades = data;
       },
       error: (error) => {
@@ -71,7 +71,7 @@ export class UniMedidaPage implements OnInit {
         data.id = this.selectedUni.id; // Agrega el ID si estás editando
       }
 
-      console.log(this.edit ? 'Datos para actualizar:' : 'Datos para crear', data)
+      // console.log(this.edit ? 'Datos para actualizar:' : 'Datos para crear', data)
 
       const request = this.edit ? this.uniMedi.update(data) : this.uniMedi.create(data)
 
@@ -97,7 +97,7 @@ export class UniMedidaPage implements OnInit {
   }
 
   update(unidad: any) {
-    console.log(unidad.id)
+    // console.log(unidad.id)
     this.inputs.patchValue({
       nombre: unidad.nombre,
       descripcion: unidad.descripcion
@@ -121,7 +121,7 @@ export class UniMedidaPage implements OnInit {
 
     this.uniMedi.delete(id).subscribe({
       next: () => {
-        console.log(`Actividad con ID ${id} eliminada exitosamente`)
+        // console.log(`Actividad con ID ${id} eliminada exitosamente`)
         this.toastService.presentToast('Unidad de medida elminada exitosamente', 'success', 'top')
         this.getUnidad()
       },
