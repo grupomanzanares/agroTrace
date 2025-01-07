@@ -7,6 +7,9 @@ import { ProgramacionService } from 'src/app/services/programacion.service';
 import { SucursalService } from 'src/app/services/sucursal.service';
 import { ToastService } from 'src/app/services/toast.service';
 
+import * as XLSX from 'xlsx';
+import { saveAs } from 'file-saver';
+
 @Component({
   selector: 'app-programacion',
   templateUrl: './programacion.page.html',
@@ -210,5 +213,32 @@ export class ProgramacionPage implements OnInit {
       }
     })
   }
+
+  exportToExcel(id: number) {
+    // Filtrar la programación por el ID
+    const filteredData = this.proma.filter(item => item.id === id);
+  
+    if (filteredData.length === 0) {
+      this.toastService.presentToast('No se encontró la programación con el ID proporcionado', 'danger', 'top');
+      return;
+    }
+  
+    // Crear una hoja de trabajo a partir de los datos filtrados
+    const worksheet = XLSX.utils.json_to_sheet(filteredData);
+  
+    // Crear un libro de trabajo y añadir la hoja
+    const workbook = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(workbook, worksheet, `Programación ${id}`);
+  
+    // Generar el archivo Excel
+    const excelBuffer = XLSX.write(workbook, { bookType: 'xlsx', type: 'array' });
+  
+    // Guardar el archivo usando FileSaver
+    const data = new Blob([excelBuffer], { type: 'application/octet-stream' });
+    saveAs(data, `programacion_${id}.xlsx`);
+  
+    this.toastService.presentToast(`Programación con ID ${id} exportada con éxito`, 'success', 'top');
+  }
+  
 
 }
