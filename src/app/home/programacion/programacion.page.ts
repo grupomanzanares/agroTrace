@@ -16,14 +16,20 @@ import { saveAs } from 'file-saver';
   styleUrls: ['./programacion.page.scss'],
 })
 export class ProgramacionPage implements OnInit {
-
   proma: any[] = [];
+  filteredProma: any[] = []; // Lista de datos filtrados
   sucursales: any[] = [];
-  actividades: any [] = []
-  fincas: any [] = []
+  actividades: any[] = [];
+  fincas: any[] = [];
   public showForm: boolean;
-  public edit: boolean = false
+  public edit: boolean = false;
   public selecProgramacion: any = null;
+  public showFilters: boolean = false
+
+  // Filtros
+  filterStartDate: string = '';
+  filterEndDate: string = '';
+  filterSucursal: number | null = null;
 
   public inputs = new FormGroup({
     sucursalId: new FormControl(null, [Validators.required]),
@@ -32,8 +38,7 @@ export class ProgramacionPage implements OnInit {
     actividadId: new FormControl('', [Validators.required]),
     jornal: new FormControl('', [Validators.required]),
     cantidad: new FormControl('', [Validators.required]),
-  })
-
+  });
 
   constructor(
     private programacion: ProgramacionService,
@@ -42,38 +47,45 @@ export class ProgramacionPage implements OnInit {
     private sucursal: SucursalService,
     private actividad: ActividadService,
     private finca: FincaService
-  ) { this.showForm = false }
+  ) {
+    this.showForm = false;
+  }
 
   ngOnInit() {
-    this.getSucursales()
-    this.getFinca()
-    this.getActividad()
-    this.getPromagacion()
+    this.getSucursales();
+    this.getFinca();
+    this.getActividad();
+    this.getPromagacion();
   }
 
-  onShowForm(){
-    this.showForm = true
-    this.inputs.reset()
-    this.edit = false
-    this.selecProgramacion = null
+  onShowForm() {
+    this.showForm = true;
+    this.inputs.reset();
+    this.edit = false;
+    this.selecProgramacion = null;
   }
 
-  onCloseForm(){
-    this.showForm = false
-    this.edit = false
-    this.selecProgramacion = null
-    this.inputs.reset()
+  onCloseForm() {
+    this.showForm = false;
+    this.edit = false;
+    this.selecProgramacion = null;
+    this.inputs.reset();
+  }
+
+  toggleFilters() {
+    this.showFilters = !this.showFilters;
   }
 
   getPromagacion() {
     this.programacion.getProgramacion().subscribe({
       next: (data) => {
-        this.proma = data.map(item => ({
+        this.proma = data.map((item) => ({
           ...item,
           sucursalnom: this.getSucursalNombre(item.sucursalId), // Obtener el nombre de la sucursal
           activinom: this.getActividadNom(item.actividadId),
-          fincanom: this.getFincaNom(item.fincaId)
+          fincanom: this.getFincaNom(item.fincaId),
         }));
+        this.filteredProma = [...this.proma]; // Inicializar los datos filtrados
         console.log('Programaciones con nombres de sucursales:', this.proma);
       },
       error: (error) => {
@@ -83,28 +95,27 @@ export class ProgramacionPage implements OnInit {
     });
   }
 
-
   // Métodos para obtener nombres
   getSucursalNombre(id: number): string {
-    const sucursal = this.sucursales.find(s => s.id === id);
+    const sucursal = this.sucursales.find((s) => s.id === id);
     return sucursal ? sucursal.nombre : 'Desconocido';
   }
 
   getActividadNom(id: number): string {
-    const activi = this.actividades.find(a => a.id === id)
-    return activi ? activi.nombre : 'Desconocodo'
+    const activi = this.actividades.find((a) => a.id === id);
+    return activi ? activi.nombre : 'Desconocido';
   }
 
-  getFincaNom(id: number): string{
-    const finca  = this.fincas.find(f => f.id === id)
-    return finca ? finca.nombre : 'Desconocido'
+  getFincaNom(id: number): string {
+    const finca = this.fincas.find((f) => f.id === id);
+    return finca ? finca.nombre : 'Desconocido';
   }
 
   getSucursales() {
     this.sucursal.getSucursal().subscribe({
       next: (data) => {
         console.log('Sucursales cargadas:', data);
-        this.sucursales = data; // Almacenar sucursales
+        this.sucursales = data;
       },
       error: (error) => {
         console.error('Error al cargar sucursales:', error);
@@ -117,7 +128,7 @@ export class ProgramacionPage implements OnInit {
     this.actividad.getActividad().subscribe({
       next: (data) => {
         console.log('Datos de Actividades:', data);
-        this.actividades = data
+        this.actividades = data;
       },
       error: (error) => {
         console.error('Error al cargar Actividades', error);
@@ -129,50 +140,50 @@ export class ProgramacionPage implements OnInit {
   getFinca() {
     this.finca.getFinca().subscribe({
       next: (data) => {
-        console.log('Datos de fincas', data)
-        this.fincas = data
+        console.log('Datos de fincas', data);
+        this.fincas = data;
       },
       error: (error) => {
-        console.error('Error al cargar las fincas', error);
+        console.error('Error al cargar las fincas:', error);
         this.toastService.presentToast('Error al cargar las fincas', 'danger', 'top');
-      }
-    })
+      },
+    });
   }
 
-  createOrUpdate(){
+  createOrUpdate() {
     if (this.inputs.valid) {
       const data: any = {
         ...this.inputs.value,
-        usuarioMod: this.authService.getLoggedUserName()
-      }
+        usuarioMod: this.authService.getLoggedUserName(),
+      };
 
       if (!this.edit) {
-        data.usuario = this.authService.getLoggedUserName()
+        data.usuario = this.authService.getLoggedUserName();
       }
 
       if (this.edit) {
-        data.id = this.selecProgramacion.id
+        data.id = this.selecProgramacion.id;
       }
 
-      const request = this.edit ? this.programacion.update(data) : this.programacion.create(data)
+      const request = this.edit ? this.programacion.update(data) : this.programacion.create(data);
 
       request.subscribe({
-        next: (response) => {
-          const message = this.edit ? 'Programacion actualizada exitosamente' : 'Programacion creada exitosamente'
+        next: () => {
+          const message = this.edit ? 'Programacion actualizada exitosamente' : 'Programacion creada exitosamente';
 
           this.toastService.presentToast(message, 'success', 'top');
-          this.showForm = false
-          this.getPromagacion()
-          this.edit = false
+          this.showForm = false;
+          this.getPromagacion();
+          this.edit = false;
         },
         error: (error) => {
-          const message = this.edit ? 'Error al actualizar la programacion' : 'Error al crear la programacion'
-          console.log(message, error)
-          this.toastService.presentToast(message, 'danger', 'top')
-        }
-      })
+          const message = this.edit ? 'Error al actualizar la programacion' : 'Error al crear la programacion';
+          console.log(message, error);
+          this.toastService.presentToast(message, 'danger', 'top');
+        },
+      });
     } else {
-      console.error('Formulario invalido:', this.inputs.errors)
+      console.error('Formulario invalido:', this.inputs.errors);
       this.toastService.presentToast('Por favor, completa todos los campos correctamente', 'danger', 'top');
     }
   }
@@ -184,61 +195,123 @@ export class ProgramacionPage implements OnInit {
       fincaId: programacion.fincaId,
       actividadId: programacion.actividadId,
       jornal: programacion.jornal,
-      cantidad: programacion.cantidad
+      cantidad: programacion.cantidad,
     });
     this.selecProgramacion = programacion;
-    this.edit = true
-    this.showForm = true
+    this.edit = true;
+    this.showForm = true;
   }
 
-  delete(id: number){
-    if(!id){
-      this.toastService.presentToast('ID invalido para eliminar', 'danger', 'top')
-      return
+  delete(id: number) {
+    if (!id) {
+      this.toastService.presentToast('ID invalido para eliminar', 'danger', 'top');
+      return;
     }
 
-    const confirmDelete = confirm('Estas seguro que deseas eliminar esta actividad')
+    const confirmDelete = confirm('Estas seguro que deseas eliminar esta actividad');
     if (!confirmDelete) {
-      return
+      return;
     }
 
     this.programacion.delete(id).subscribe({
       next: () => {
-        this.toastService.presentToast('Programacion eliminada con exito', 'success', 'top')
-        this.getPromagacion()
+        this.toastService.presentToast('Programacion eliminada con exito', 'success', 'top');
+        this.getPromagacion();
       },
       error: (error) => {
         console.error('Error al eliminar la programacion', error);
-        this.toastService.presentToast('Error al eliminar la programacion', 'danger', 'top')
-      }
-    })
+        this.toastService.presentToast('Error al eliminar la programacion', 'danger', 'top');
+      },
+    });
   }
 
-  exportToExcel(id: number) {
-    // Filtrar la programación por el ID
-    const filteredData = this.proma.filter(item => item.id === id);
+  // Nueva función para aplicar filtros
+// Función para aplicar filtros
+applyFilters() {
+  if (this.filterStartDate && this.filterEndDate) {
+    const startDate = new Date(this.filterStartDate);
+    const endDate = new Date(this.filterEndDate);
+
+    if (startDate > endDate) {
+      this.toastService.presentToast('La fecha de inicio no puede ser mayor que la fecha de fin', 'danger', 'top');
+      return;
+    }
+  }
+
+  this.filteredProma = this.proma.filter((item) => {
+    const itemDate = new Date(item.fecha).getTime();
+
+    const matchesStartDate = 
+      !this.filterStartDate || itemDate >= new Date(this.filterStartDate).getTime();
+
+    const matchesEndDate = 
+      !this.filterEndDate || itemDate <= new Date(this.filterEndDate).getTime();
+
+    const matchesSucursal = 
+      !this.filterSucursal || item.sucursalId === this.filterSucursal;
+
+    return matchesStartDate && matchesEndDate && matchesSucursal;
+  });
+
+  if (this.filteredProma.length === 0) {
+    this.toastService.presentToast('No se encontraron resultados con los filtros aplicados', 'warning', 'top');
+  } else {
+    console.log('Datos filtrados:', this.filteredProma);
+  }
+}
+
+
+  onDateChange(type: 'start' | 'end', value: string | string[]) {
+    const selectedDate = Array.isArray(value) ? value[0] : value; // Tomar el primer valor si es un arreglo
+    const formattedDate = selectedDate.slice(0, 10); // Tomar solo el formato YYYY-MM-DD
   
-    if (filteredData.length === 0) {
-      this.toastService.presentToast('No se encontró la programación con el ID proporcionado', 'danger', 'top');
+    if (type === 'start') {
+      this.filterStartDate = formattedDate; // Fecha de inicio seleccionada
+    } else if (type === 'end') {
+      this.filterEndDate = formattedDate; // Fecha de fin seleccionada
+    }
+  
+    console.log(`Fecha ${type === 'start' ? 'Inicio' : 'Fin'} seleccionada:`, formattedDate);
+  }
+  
+
+  // Nueva función para restablecer los filtros
+  resetFilters() {
+    this.filterStartDate = '';
+    this.filterEndDate = '';
+    this.filterSucursal = null;
+    this.filteredProma = [...this.proma]; // Restaurar datos originales
+  }
+
+  exportFilteredToExcel() {
+    if (this.filteredProma.length === 0) {
+      this.toastService.presentToast('No hay datos filtrados para exportar', 'danger', 'top');
       return;
     }
   
-    // Crear una hoja de trabajo a partir de los datos filtrados
-    const worksheet = XLSX.utils.json_to_sheet(filteredData);
+    const worksheet = XLSX.utils.json_to_sheet(this.filteredProma);
+    const colWidths = this.calculateColumnWidths(this.filteredProma);
+    worksheet['!cols'] = colWidths;
   
-    // Crear un libro de trabajo y añadir la hoja
     const workbook = XLSX.utils.book_new();
-    XLSX.utils.book_append_sheet(workbook, worksheet, `Programación ${id}`);
+    XLSX.utils.book_append_sheet(workbook, worksheet, 'Datos Filtrados');
   
-    // Generar el archivo Excel
     const excelBuffer = XLSX.write(workbook, { bookType: 'xlsx', type: 'array' });
-  
-    // Guardar el archivo usando FileSaver
     const data = new Blob([excelBuffer], { type: 'application/octet-stream' });
-    saveAs(data, `programacion_${id}.xlsx`);
+    saveAs(data, 'datos_filtrados.xlsx');
   
-    this.toastService.presentToast(`Programación con ID ${id} exportada con éxito`, 'success', 'top');
+    this.toastService.presentToast('Datos filtrados exportados con éxito', 'success', 'top');
   }
   
 
+  private calculateColumnWidths(data: any[]): { wpx: number }[] {
+    const keys = Object.keys(data[0]);
+    return keys.map((key) => {
+      const maxLength = Math.max(
+        key.length,
+        ...data.map((item) => (item[key] ? item[key].toString().length : 0))
+      );
+      return { wpx: maxLength * 10 };
+    });
+  }
 }
