@@ -81,11 +81,17 @@ export class ProgramacionPage implements OnInit {
       next: (data) => {
         this.proma = data.map((item) => ({
           ...item,
-          sucursalnom: this.getSucursalNombre(item.sucursalId), // Obtener el nombre de la sucursal
+          sucursalnom: this.getSucursalNombre(item.sucursalId),
           activinom: this.getActividadNom(item.actividadId),
           fincanom: this.getFincaNom(item.fincaId),
+          originalFecha: new Date(item.fecha), // Almacena el valor original como Date
+          originalFecSincronizacion: new Date(item.fecSincronizacion),
+          fecha: this.formatDate(item.fecha), // Formato para visualización
+          fecSincronizacion: this.formatDate(item.fecSincronizacion),
+          createdAt: this.formatDate(item.createdAt),
+          updatedAt: this.formatDate(item.updatedAt)
         }));
-        this.filteredProma = [...this.proma]; // Inicializar los datos filtrados
+        this.filteredProma = [...this.proma];
         console.log('Programaciones con nombres de sucursales:', this.proma);
       },
       error: (error) => {
@@ -93,6 +99,17 @@ export class ProgramacionPage implements OnInit {
         this.toastService.presentToast('Error al cargar la programación', 'danger', 'top');
       },
     });
+  }
+
+  private formatDate(dateString: string): string {
+    if (!dateString) return 'N/A'; // Manejar valores nulos o indefinidos
+    const date = new Date(dateString);
+    const options: Intl.DateTimeFormatOptions = {
+      year: 'numeric',
+      month: '2-digit',
+      day: '2-digit',
+    };
+    return date.toLocaleDateString('es-ES', options); // Formato DD/MM/YYYY para español
   }
 
   // Métodos para obtener nombres
@@ -226,54 +243,52 @@ export class ProgramacionPage implements OnInit {
   }
 
   // Nueva función para aplicar filtros
-// Función para aplicar filtros
-applyFilters() {
-  if (this.filterStartDate && this.filterEndDate) {
-    const startDate = new Date(this.filterStartDate);
-    const endDate = new Date(this.filterEndDate);
+  applyFilters() {
+    if (this.filterStartDate && this.filterEndDate) {
+      const startDate = new Date(this.filterStartDate);
+      const endDate = new Date(this.filterEndDate);
 
-    if (startDate > endDate) {
-      this.toastService.presentToast('La fecha de inicio no puede ser mayor que la fecha de fin', 'danger', 'top');
-      return;
+      if (startDate > endDate) {
+        this.toastService.presentToast('La fecha de inicio no puede ser mayor que la fecha de fin', 'danger', 'top');
+        return;
+      }
+    }
+
+    this.filteredProma = this.proma.filter((item) => {
+      const itemDate = item.originalFecha.getTime(); // Usa la fecha original
+
+      const matchesStartDate =
+        !this.filterStartDate || itemDate >= new Date(this.filterStartDate).getTime();
+
+      const matchesEndDate =
+        !this.filterEndDate || itemDate <= new Date(this.filterEndDate).getTime();
+
+      const matchesSucursal =
+        !this.filterSucursal || item.sucursalId === this.filterSucursal;
+
+      return matchesStartDate && matchesEndDate && matchesSucursal;
+    });
+
+    if (this.filteredProma.length === 0) {
+      this.toastService.presentToast('No se encontraron resultados con los filtros aplicados', 'warning', 'top');
+    } else {
+      console.log('Datos filtrados:', this.filteredProma);
     }
   }
-
-  this.filteredProma = this.proma.filter((item) => {
-    const itemDate = new Date(item.fecha).getTime();
-
-    const matchesStartDate = 
-      !this.filterStartDate || itemDate >= new Date(this.filterStartDate).getTime();
-
-    const matchesEndDate = 
-      !this.filterEndDate || itemDate <= new Date(this.filterEndDate).getTime();
-
-    const matchesSucursal = 
-      !this.filterSucursal || item.sucursalId === this.filterSucursal;
-
-    return matchesStartDate && matchesEndDate && matchesSucursal;
-  });
-
-  if (this.filteredProma.length === 0) {
-    this.toastService.presentToast('No se encontraron resultados con los filtros aplicados', 'warning', 'top');
-  } else {
-    console.log('Datos filtrados:', this.filteredProma);
-  }
-}
 
 
   onDateChange(type: 'start' | 'end', value: string | string[]) {
     const selectedDate = Array.isArray(value) ? value[0] : value; // Tomar el primer valor si es un arreglo
     const formattedDate = selectedDate.slice(0, 10); // Tomar solo el formato YYYY-MM-DD
-  
+
     if (type === 'start') {
       this.filterStartDate = formattedDate; // Fecha de inicio seleccionada
     } else if (type === 'end') {
       this.filterEndDate = formattedDate; // Fecha de fin seleccionada
     }
-  
+
     console.log(`Fecha ${type === 'start' ? 'Inicio' : 'Fin'} seleccionada:`, formattedDate);
   }
-  
 
   // Nueva función para restablecer los filtros
   resetFilters() {
@@ -288,21 +303,38 @@ applyFilters() {
       this.toastService.presentToast('No hay datos filtrados para exportar', 'danger', 'top');
       return;
     }
-  
-    const worksheet = XLSX.utils.json_to_sheet(this.filteredProma);
-    const colWidths = this.calculateColumnWidths(this.filteredProma);
+
+    const dataToExport = this.filteredProma.map(item => ({
+      ID: item.id,
+      Sucursal: item.sucursalnom,
+      Fecha: item.fecha,
+      Finca: item.fincanom,
+      Lote: item.lote,
+      Actividad: item.activinom,
+      Jornal: item.jornal,
+      Cantidad: item.cantidad,
+      Observacion: item.observacion,
+      Habilitado: item.habilitado,
+      Sincronizado: item.sincronizado,
+      "Fecha Sincronizado": item.fecSincronizacion,
+      Maquina: item.maquina,
+      Usuario: item.usuario,
+      "Usuario Modificacion": item.usuarioMod,
+    }));
+
+    const worksheet = XLSX.utils.json_to_sheet(dataToExport );
+    const colWidths = this.calculateColumnWidths(dataToExport );
     worksheet['!cols'] = colWidths;
-  
+
     const workbook = XLSX.utils.book_new();
     XLSX.utils.book_append_sheet(workbook, worksheet, 'Datos Filtrados');
-  
+
     const excelBuffer = XLSX.write(workbook, { bookType: 'xlsx', type: 'array' });
     const data = new Blob([excelBuffer], { type: 'application/octet-stream' });
     saveAs(data, 'datos_filtrados.xlsx');
-  
+
     this.toastService.presentToast('Datos filtrados exportados con éxito', 'success', 'top');
   }
-  
 
   private calculateColumnWidths(data: any[]): { wpx: number }[] {
     const keys = Object.keys(data[0]);
