@@ -155,6 +155,7 @@
               <span *ngIf="inputs.controls.fincaId.errors?.['required']">La finca es obligatoria</span>
             </div>
           </ion-col>
+
           <ion-col size="12">
             <ion-item class="ion-margin">
               <ion-label position="stacked">Selecciona la fecha</ion-label>
@@ -168,7 +169,8 @@
             </ion-item>
             <div class="error" *ngIf="inputs.controls.fecha.errors && inputs.controls.fecha.touched">
               <span *ngIf="inputs.controls.fecha.errors?.['required']">La fecha es obligatoria</span>
-            </div>          
+            </div>     
+                 
           </ion-col>            
             <ion-col size="12">
               <ion-item class="ion-margin">

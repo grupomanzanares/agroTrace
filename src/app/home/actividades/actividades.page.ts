@@ -60,6 +60,8 @@ export class ActividadesPage implements OnInit {
       next: (data) => {
         this.actividad = data.map((item: any) => ({
           ...item,
+          unidnombre: this.getnomUni(item.unidadId),
+          subcatenom: this.getnomSub(item.subCategoriaId),
           controlPorLote: item.controlPorLote ? 1 : 0,
         }));
         // console.log('Datos de Actividades:', this.actividad);
@@ -92,6 +94,22 @@ export class ActividadesPage implements OnInit {
         console.error('Error al cargar las sub-categorias', error);
       },
     });
+  }
+
+  getnomUni(id: number): string{
+    const uni = this.unidad.find((u) => u.id === id );
+    if (!uni) {
+      return 'Desconocido'
+    }
+    return uni.nombre
+  }
+
+  getnomSub(id: number) : string {
+    const sub = this.subcategoria.find((s) => s.id === id)
+    if (!sub) {
+      return 'Desconocido'
+    }
+    return sub.nombre
   }
 
   createOrUpdate() {

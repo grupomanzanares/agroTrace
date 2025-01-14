@@ -57,7 +57,7 @@ export class SubcategoriaPage implements OnInit {
     this.categoriaService.getCategoria().subscribe({
       next: (data) => {
         // console.log('Datos de categorias', data)
-        this.categorias = data;
+        this.categorias = data
       },
       error: (error) => {
         console.error('Error al cargar las categorias', error)
@@ -69,12 +69,23 @@ export class SubcategoriaPage implements OnInit {
     this.subcatService.getSubCategoria().subscribe({
       next: (data) => {
         // console.log('Sub categoria', data)
-        this.subcategoria = data
+        this.subcategoria = data.map((item) => ({
+          ...item,
+          catenom: this.getcatenom(item.categoriaId)
+        }));
       },
       error: (error) => {
         console.error('Error al cargar las categorias', error)
       }
     })
+  }
+
+  getcatenom(id: number): string{
+    const cate = this.categorias.find((c) => c.id === id)
+    if (!cate) {
+      return 'Desconocido'
+    }
+    return cate.nombre
   }
 
   createOrUpdate() {

@@ -115,18 +115,38 @@ export class ProgramacionPage implements OnInit {
   // Métodos para obtener nombres
   getSucursalNombre(id: number): string {
     const sucursal = this.sucursales.find((s) => s.id === id);
-    return sucursal ? sucursal.nombre : 'Desconocido';
+    if (!sucursal) {
+      this.reloadPage(); // Llama a una función controlada para recargar o manejar el problema
+      return 'Desconocido';
+    }
+    return sucursal.nombre;
   }
-
+  
   getActividadNom(id: number): string {
     const activi = this.actividades.find((a) => a.id === id);
-    return activi ? activi.nombre : 'Desconocido';
+    if (!activi) {
+      this.reloadPage(); // Llama a una función controlada para recargar o manejar el problema
+      return 'Desconocido';
+    }
+    return activi.nombre;
   }
-
+  
   getFincaNom(id: number): string {
     const finca = this.fincas.find((f) => f.id === id);
-    return finca ? finca.nombre : 'Desconocido';
+    if (!finca) {
+      this.reloadPage(); // Llama a una función controlada para recargar o manejar el problema
+      return 'Desconocido';
+    }
+    return finca.nombre;
   }
+  
+  // Nueva función para manejar la recarga de página
+  reloadPage(): void {
+    setTimeout(() => {
+      window.location.reload(); // Recargar la página después de un breve delay para evitar problemas de bucle
+    }, 1000); // Puedes ajustar el tiempo si es necesario
+  }
+  
 
   getSucursales() {
     this.sucursal.getSucursal().subscribe({
@@ -208,7 +228,7 @@ export class ProgramacionPage implements OnInit {
   }
   
   update(programacion: any) {
-    let formattedFecha: string | null = null;
+    let formattedFecha: string ;
     try {
       // Validar y formatear la fecha solo si es válida
       if (programacion.fecha) {
@@ -225,19 +245,19 @@ export class ProgramacionPage implements OnInit {
   
     this.inputs.patchValue({
       sucursalId: programacion.sucursalId,
-      fecha: formattedFecha , // Si no hay fecha válida, usa una cadena vacía
+      fecha: programacion.fecha, // Si no hay fecha válida, usa una cadena vacía
       fincaId: programacion.fincaId,
       actividadId: programacion.actividadId,
       jornal: programacion.jornal,
       cantidad: programacion.cantidad,
     });
+    console.log(programacion.fecha)
   
     this.selecProgramacion = programacion;
     this.edit = true;
     this.showForm = true;
     console.log('Valores actualizados en el formulario:', this.inputs.value);
   }
-  
 
   delete(id: number) {
     if (!id) {
