@@ -228,24 +228,26 @@ export class ProgramacionPage implements OnInit {
   }
   
   update(programacion: any) {
-    let formattedFecha: string ;
-    try {
-      // Validar y formatear la fecha solo si es válida
-      if (programacion.fecha) {
-        const fecha = new Date(programacion.fecha);
-        if (!isNaN(fecha.getTime())) {
-          formattedFecha = fecha.toISOString().slice(0, 10); // Formato YYYY-MM-DD
-        } else {
-          console.warn('Fecha inválida detectada:', programacion.fecha);
-        }
+    console.log('Datos recibidos en update:', programacion);
+  
+
+     // Convertir el formato DD/MM/YYYY a YYYY-MM-DD
+    let fechaISO;
+    if (programacion.fecha) {
+      try {
+        // Asumiendo que programacion.fecha viene en formato DD/MM/YYYY
+        const [dia, mes, anio] = programacion.fecha.split('/');
+        fechaISO = `${anio}-${mes}-${dia}`;
+        console.log('Fecha convertida:', fechaISO);
+      } catch (error) {
+        console.error('Error al procesar la fecha:', error);
+        fechaISO = new Date().toISOString().split('T')[0]; // Usar fecha actual como fallback
       }
-    } catch (error) {
-      console.error('Error al procesar la fecha:', programacion.fecha, error);
     }
   
     this.inputs.patchValue({
       sucursalId: programacion.sucursalId,
-      fecha: programacion.fecha, // Si no hay fecha válida, usa una cadena vacía
+      fecha: fechaISO,
       fincaId: programacion.fincaId,
       actividadId: programacion.actividadId,
       jornal: programacion.jornal,
@@ -253,6 +255,9 @@ export class ProgramacionPage implements OnInit {
     });
     console.log(programacion.fecha)
   
+    console.log('Valor actual del control fecha:', this.inputs.get('fecha').value);
+
+
     this.selecProgramacion = programacion;
     this.edit = true;
     this.showForm = true;
@@ -318,16 +323,22 @@ export class ProgramacionPage implements OnInit {
 
 
   onDateChange(type: 'form' | 'start' | 'end', value: string | string[]) {
-    const selectedDate = Array.isArray(value) ? value[0] : value; // Tomar el primer valor si es un arreglo
-    const formattedDate = selectedDate.slice(0, 10); // Tomar solo el formato YYYY-MM-DD
-
-    if (type === 'start') {
-      this.filterStartDate = formattedDate; // Fecha de inicio seleccionada
+    console.log('Fecha recibida en onDateChange:', value);
+    
+    const selectedDate = Array.isArray(value) ? value[0] : value;
+    
+    if (type === 'form') {
+      // Asegurarse de que solo tomamos la parte de la fecha (YYYY-MM-DD)
+      const fechaCorta = selectedDate.split('T')[0];
+      this.inputs.patchValue({
+        fecha: fechaCorta
+      });
+      console.log('Fecha actualizada en formulario:', fechaCorta);
+    } else if (type === 'start') {
+      this.filterStartDate = selectedDate.split('T')[0];
     } else if (type === 'end') {
-      this.filterEndDate = formattedDate; // Fecha de fin seleccionada
+      this.filterEndDate = selectedDate.split('T')[0];
     }
-
-    console.log(`Fecha ${type === 'start' ? 'Inicio' : 'Fin'} seleccionada:`, formattedDate);
   }
 
   // Nueva función para restablecer los filtros
