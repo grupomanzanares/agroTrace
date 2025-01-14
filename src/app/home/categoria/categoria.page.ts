@@ -84,21 +84,18 @@ export class CategoriaPage implements OnInit {
         ...this.inputs.value,
         usuarioMod: this.authService.getLoggedUserName()
       }
-      
+
       if (!this.edit) {
-        data.usuario = this.authService.getLoggedUserName(); 
+        data.usuario = this.authService.getLoggedUserName();
       }
 
       if (this.edit) {
-        data.id = this.selectedCategoria.id; 
+        data.id = this.selectedCategoria.id;
       }
-
-      // console.log(this.edit ? 'Datos para actualizar:' : 'Datos para  crear', data)
 
       const request = this.edit ? this.categoriaService.update(data) : this.categoriaService.createCategoria(data)
 
       request.subscribe({
-
         next: (response) => {
           const message = this.edit ? 'Categoria actualizada exitosamente' : 'Categoria creada exitosamente';
           // console.log(message, response);

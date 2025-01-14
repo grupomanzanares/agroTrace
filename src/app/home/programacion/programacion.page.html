@@ -3,11 +3,11 @@
 
 <ion-content id="main-content">
   <!-- Formulario de Filtros -->
-   <div class="ion-margin-top">
-     <ion-button expand="block" color="tertiary" (click)="toggleFilters()">
-       {{ showFilters ? 'Ocultar Filtros' : 'Buscar' }}
-     </ion-button>
-   </div>
+  <div class="ion-margin-top" *ngIf="!showForm">
+    <ion-button expand="block" color="tertiary" (click)="toggleFilters()">
+      {{ showFilters ? 'Ocultar Filtros' : 'Buscar' }}
+    </ion-button>
+  </div>
   <div *ngIf="showFilters">
     <ion-grid>
       <ion-row>
@@ -62,7 +62,8 @@
         </ion-col>
       </ion-row>
       <div class="ion-margin-top" *ngIf="filteredProma.length > 0">
-        <ion-button expand="block" color="success" [disabled]="filteredProma.length === 0" (click)="exportFilteredToExcel()">
+        <ion-button expand="block" color="success" [disabled]="filteredProma.length === 0"
+          (click)="exportFilteredToExcel()">
           <ion-icon slot="start" name="download-outline"></ion-icon>
           Exportar a Excel
         </ion-button>
@@ -90,7 +91,7 @@
           <th>Maquina</th>
           <th>Usuario</th>
           <th>Usuario Modificacion</th>
-          <th>Acciones</th> 
+          <th>Acciones</th>
         </tr>
       </thead>
       <tbody>
@@ -121,5 +122,95 @@
         </tr>
       </tbody>
     </table>
-  </div>  
+  </div>
+
+  <div *ngIf="showForm">
+    <ion-grid fixed>
+      <ion-row>
+        <ion-grid fixed>
+          <ion-row>
+            <ion-col size="12">
+              <ion-item class="ion-margin">
+                <ion-select interface="popover" placeholder="Selecciona la sucursal"
+                [formControl]="inputs.controls.sucursalId">
+                <ion-select-option *ngFor="let sucursal of sucursales" [value]="sucursal.id">
+                  {{ sucursal.nombre }}
+                </ion-select-option>
+              </ion-select>
+            </ion-item>
+            <div class="error" *ngIf="inputs.controls.sucursalId.errors && inputs.controls.sucursalId.touched">
+              <span *ngIf="inputs.controls.sucursalId.errors?.['required']">La sucursal es obligatoria</span>
+            </div>
+          </ion-col>
+            <ion-col size="12">
+              <ion-item class="ion-margin">
+                <ion-select interface="popover" placeholder="Selecciona la Finca"
+                [formControl]="inputs.controls.fincaId">
+                <ion-select-option *ngFor="let finca of fincas" [value]="finca.id">
+                  {{ finca.nombre }}
+                </ion-select-option>
+              </ion-select>
+            </ion-item>
+            <div class="error" *ngIf="inputs.controls.fincaId.errors && inputs.controls.fincaId.touched">
+              <span *ngIf="inputs.controls.fincaId.errors?.['required']">La finca es obligatoria</span>
+            </div>
+          </ion-col>
+          <ion-col size="12">
+            <ion-item class="ion-margin">
+              <ion-label position="stacked">Selecciona la fecha</ion-label>
+              <ion-datetime-button datetime="datetime-modal" class="ion-margin"></ion-datetime-button>
+              <ion-modal [keepContentsMounted]="true">
+                <ng-template>
+                  <ion-datetime id="datetime-modal" presentation="date"  [formControl]="inputs.controls.fecha"
+                    (ionChange)="onDateChange('form', $event.detail.value)"></ion-datetime>
+                </ng-template>
+              </ion-modal>
+            </ion-item>
+            <div class="error" *ngIf="inputs.controls.fecha.errors && inputs.controls.fecha.touched">
+              <span *ngIf="inputs.controls.fecha.errors?.['required']">La fecha es obligatoria</span>
+            </div>          
+          </ion-col>            
+            <ion-col size="12">
+              <ion-item class="ion-margin">
+                <ion-select interface="popover" placeholder="Selecciona la Actividad"
+                  [formControl]="inputs.controls.actividadId">
+                  <ion-select-option *ngFor="let actividad of actividades" [value]="actividad.id">
+                    {{ actividad.nombre }}
+                  </ion-select-option>
+                </ion-select>
+              </ion-item>
+              <div class="error" *ngIf="inputs.controls.actividadId.errors && inputs.controls.actividadId.touched">
+                <samp *ngIf="inputs.controls.actividadId.errors?.['required']">La actividad es obligatoria</samp>
+              </div>
+            </ion-col>
+            <ion-col size="12">
+              <app-custom-input icon="trending-up-outline" label="Ingresa el jornal" type="text" autocomplete="jornal"
+                [control]="inputs.controls.jornal">
+              </app-custom-input>
+              <div class="error" *ngIf="inputs.controls.jornal.errors && inputs.controls.jornal.touched">
+                <span *ngIf="inputs.controls.jornal.errors?.['required']">El jornal es obligatorio</span>
+              </div>
+            </ion-col>
+            <ion-col size="12">
+              <app-custom-input icon="cash-outline" label="Ingresa la cantidad" type="text" autocomplete="cantidad"
+              [control]="inputs.controls.cantidad"></app-custom-input>
+            </ion-col>
+            <div class="error" *ngIf="inputs.controls.cantidad.errors && inputs.controls.cantidad.touched">
+              <span *ngIf="inputs.controls.cantidad.errors?.['required']">La cantidad es obligatoria</span>
+            </div>
+          </ion-row>
+          <ion-button class="ion-margin" expand="block" color="primary" (click)="createOrUpdate()">Guardar</ion-button>
+          <ion-button class="ion-margin" expand="block" color="danger" (click)="onCloseForm()">Volver</ion-button>
+        </ion-grid>
+      </ion-row>
+    </ion-grid>
+
+  </div>
+
+  <ion-fab slot="fixed" vertical="bottom" horizontal="end" *ngIf="!showForm">
+    <ion-fab-button (click)="onShowForm()" size="small" color="success">
+      <ion-icon name="add"></ion-icon>
+    </ion-fab-button>
+  </ion-fab>
+
 </ion-content>

@@ -56,10 +56,13 @@ export class ProgramacionPage implements OnInit {
     this.getFinca();
     this.getActividad();
     this.getPromagacion();
+    const today = new Date().toISOString().slice(0, 10);
+    this.inputs.controls.fecha.setValue(today)
   }
 
   onShowForm() {
     this.showForm = true;
+    this.showFilters = false;
     this.inputs.reset();
     this.edit = false;
     this.selecProgramacion = null;
@@ -67,6 +70,7 @@ export class ProgramacionPage implements OnInit {
 
   onCloseForm() {
     this.showForm = false;
+    this.showFilters = false;
     this.edit = false;
     this.selecProgramacion = null;
     this.inputs.reset();
@@ -104,11 +108,7 @@ export class ProgramacionPage implements OnInit {
   private formatDate(dateString: string): string {
     if (!dateString) return 'N/A'; // Manejar valores nulos o indefinidos
     const date = new Date(dateString);
-    const options: Intl.DateTimeFormatOptions = {
-      year: 'numeric',
-      month: '2-digit',
-      day: '2-digit',
-    };
+    const options: Intl.DateTimeFormatOptions = { year: 'numeric', month: '2-digit', day: '2-digit', };
     return date.toLocaleDateString('es-ES', options); // Formato DD/MM/YYYY para español
   }
 
@@ -173,21 +173,23 @@ export class ProgramacionPage implements OnInit {
         ...this.inputs.value,
         usuarioMod: this.authService.getLoggedUserName(),
       };
-
+  
       if (!this.edit) {
         data.usuario = this.authService.getLoggedUserName();
       }
-
+  
       if (this.edit) {
         data.id = this.selecProgramacion.id;
       }
 
+      console.log('Fecha seleccionada:', this.inputs.controls.fecha.value);
+  
       const request = this.edit ? this.programacion.update(data) : this.programacion.create(data);
-
+  
       request.subscribe({
         next: () => {
           const message = this.edit ? 'Programacion actualizada exitosamente' : 'Programacion creada exitosamente';
-
+  
           this.toastService.presentToast(message, 'success', 'top');
           this.showForm = false;
           this.getPromagacion();
@@ -200,24 +202,42 @@ export class ProgramacionPage implements OnInit {
         },
       });
     } else {
-      console.error('Formulario invalido:', this.inputs.errors);
+      console.log('Formulario inválido:', this.inputs.errors);
       this.toastService.presentToast('Por favor, completa todos los campos correctamente', 'danger', 'top');
     }
   }
-
+  
   update(programacion: any) {
+    let formattedFecha: string | null = null;
+    try {
+      // Validar y formatear la fecha solo si es válida
+      if (programacion.fecha) {
+        const fecha = new Date(programacion.fecha);
+        if (!isNaN(fecha.getTime())) {
+          formattedFecha = fecha.toISOString().slice(0, 10); // Formato YYYY-MM-DD
+        } else {
+          console.warn('Fecha inválida detectada:', programacion.fecha);
+        }
+      }
+    } catch (error) {
+      console.error('Error al procesar la fecha:', programacion.fecha, error);
+    }
+  
     this.inputs.patchValue({
       sucursalId: programacion.sucursalId,
-      fecha: programacion.fecha,
+      fecha: formattedFecha , // Si no hay fecha válida, usa una cadena vacía
       fincaId: programacion.fincaId,
       actividadId: programacion.actividadId,
       jornal: programacion.jornal,
       cantidad: programacion.cantidad,
     });
+  
     this.selecProgramacion = programacion;
     this.edit = true;
     this.showForm = true;
+    console.log('Valores actualizados en el formulario:', this.inputs.value);
   }
+  
 
   delete(id: number) {
     if (!id) {
@@ -277,7 +297,7 @@ export class ProgramacionPage implements OnInit {
   }
 
 
-  onDateChange(type: 'start' | 'end', value: string | string[]) {
+  onDateChange(type: 'form' | 'start' | 'end', value: string | string[]) {
     const selectedDate = Array.isArray(value) ? value[0] : value; // Tomar el primer valor si es un arreglo
     const formattedDate = selectedDate.slice(0, 10); // Tomar solo el formato YYYY-MM-DD
 

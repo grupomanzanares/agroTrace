@@ -46,7 +46,7 @@ export class ProgramacionService {
 
   update(programacion: any): Observable<any> {
     if (!programacion.id){
-      console.error('La programacion no tiiene un Id valido');
+      console.error('La programacion no tiene un Id valido');
       return throwError(() => new Error('No se puede actualizar la categoria sin un ID'))
     }
 

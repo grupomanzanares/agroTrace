@@ -36,6 +36,4 @@ export class CustomInputComponent  implements OnInit {
       this.type ="text"
     }
   }
-
-
 }
