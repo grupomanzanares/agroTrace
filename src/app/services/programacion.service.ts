@@ -8,7 +8,7 @@ import { environment } from 'src/environments/environment.prod';
 })
 export class ProgramacionService {
 
-  apiUrl =environment.apiUrl
+  apiUrl = environment.apiUrl
 
   constructor(private http: HttpClient) { }
 
@@ -18,7 +18,6 @@ export class ProgramacionService {
     const headers = new HttpHeaders({
       Authorization: `Bearer ${token}`
     })
-    const body = {};
     return this.http.get<any>(url, { headers }).pipe(
       catchError((error) => {
         console.error('Error en la autenticaccion: ', error)

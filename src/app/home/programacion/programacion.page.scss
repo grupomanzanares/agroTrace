@@ -79,6 +79,54 @@ h3 {
     color: #333;
 }
 
+/* Contenedor de estado o prioridad */
+.status-indicator,
+.priority-indicator {
+    display: flex;
+    align-items: center;
+    /* Centra verticalmente */
+    gap: 10px;
+    /* Espaciado entre el cuadro y el texto */
+}
+
+/* Cuadro de color */
+.status-indicator span,
+.priority-indicator span {
+    display: inline-block;
+    width: 20px;
+    /* Tamaño del cuadro */
+    height: 20px;
+    /* Tamaño del cuadro */
+    border-radius: 3px;
+    /* Opcional: redondea las esquinas */
+}
+
+/* Colores para estados */
+.estado-pendiente span {
+    background-color: #FF2511;
+}
+
+.estado-en-proceso span {
+    background-color: orange;
+}
+
+.estado-realizado span {
+    background-color: #18A558;
+}
+
+/* Colores para prioridades */
+.prioridad-alta span {
+    background-color: red;
+}
+
+.prioridad-media span {
+    background-color: yellow;
+}
+
+.prioridad-baja span {
+    background-color: #18A558;
+}
+
 
 /* Media Queries para Pantallas Pequeñas */
 @media screen and (max-width: 768px) {

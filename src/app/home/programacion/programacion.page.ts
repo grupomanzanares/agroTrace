@@ -9,6 +9,8 @@ import { ToastService } from 'src/app/services/toast.service';
 
 import * as XLSX from 'xlsx';
 import { saveAs } from 'file-saver';
+import { EstadoService } from 'src/app/services/estado.service';
+import { PrioridadService } from 'src/app/services/prioridad.service';
 
 @Component({
   selector: 'app-programacion',
@@ -21,6 +23,8 @@ export class ProgramacionPage implements OnInit {
   sucursales: any[] = [];
   actividades: any[] = [];
   fincas: any[] = [];
+  estados: any[] = [];
+  prioridades: any [] = [];
   public showForm: boolean;
   public edit: boolean = false;
   public selecProgramacion: any = null;
@@ -38,6 +42,7 @@ export class ProgramacionPage implements OnInit {
     actividadId: new FormControl('', [Validators.required]),
     jornal: new FormControl('', [Validators.required]),
     cantidad: new FormControl('', [Validators.required]),
+    prioridadId: new FormControl('', [Validators.required])
   });
 
   constructor(
@@ -46,16 +51,21 @@ export class ProgramacionPage implements OnInit {
     private authService: AuthService,
     private sucursal: SucursalService,
     private actividad: ActividadService,
-    private finca: FincaService
+    private finca: FincaService,
+    private estado: EstadoService,
+    private prioridad: PrioridadService
   ) {
     this.showForm = false;
   }
 
   ngOnInit() {
+    this.getpro()
     this.getSucursales();
     this.getFinca();
     this.getActividad();
     this.getPromagacion();
+    this.getEstado()
+    this.getPrioridad()
     const today = new Date().toISOString().slice(0, 10);
     this.inputs.controls.fecha.setValue(today)
   }
@@ -88,15 +98,18 @@ export class ProgramacionPage implements OnInit {
           sucursalnom: this.getSucursalNombre(item.sucursalId),
           activinom: this.getActividadNom(item.actividadId),
           fincanom: this.getFincaNom(item.fincaId),
+          estadonom: this.getEstNom(item.estadoId),
+          prioridadnom: this.getProNom(item.prioridadId),
           originalFecha: new Date(item.fecha), // Almacena el valor original como Date
           originalFecSincronizacion: new Date(item.fecSincronizacion),
           fecha: this.formatDate(item.fecha), // Formato para visualización
           fecSincronizacion: this.formatDate(item.fecSincronizacion),
           createdAt: this.formatDate(item.createdAt),
-          updatedAt: this.formatDate(item.updatedAt)
+          updatedAt: this.formatDate(item.updatedAt),
+          cantidades: item.cantidad * item.signo
         }));
         this.filteredProma = [...this.proma];
-        console.log('Programaciones con nombres de sucursales:', this.proma);
+        console.log('Programaciones:', this.proma);
       },
       error: (error) => {
         console.error('Error al cargar la programación:', error);
@@ -116,7 +129,6 @@ export class ProgramacionPage implements OnInit {
   getSucursalNombre(id: number): string {
     const sucursal = this.sucursales.find((s) => s.id === id);
     if (!sucursal) {
-      this.reloadPage(); // Llama a una función controlada para recargar o manejar el problema
       return 'Desconocido';
     }
     return sucursal.nombre;
@@ -125,7 +137,6 @@ export class ProgramacionPage implements OnInit {
   getActividadNom(id: number): string {
     const activi = this.actividades.find((a) => a.id === id);
     if (!activi) {
-      this.reloadPage(); // Llama a una función controlada para recargar o manejar el problema
       return 'Desconocido';
     }
     return activi.nombre;
@@ -134,19 +145,26 @@ export class ProgramacionPage implements OnInit {
   getFincaNom(id: number): string {
     const finca = this.fincas.find((f) => f.id === id);
     if (!finca) {
-      this.reloadPage(); // Llama a una función controlada para recargar o manejar el problema
       return 'Desconocido';
     }
     return finca.nombre;
   }
-  
-  // Nueva función para manejar la recarga de página
-  reloadPage(): void {
-    setTimeout(() => {
-      window.location.reload(); // Recargar la página después de un breve delay para evitar problemas de bucle
-    }, 1000); // Puedes ajustar el tiempo si es necesario
+
+  getEstNom(id: number): string {
+    const estado = this.estados.find((e) => e.id === id)
+    if (!estado) {
+      return 'Desconocido';
+    }
+    return estado.nombre
   }
-  
+
+  getProNom(id: number): string{
+    const prio = this.prioridades.find((p) => p.id === id )
+    if (!prio) {
+      return 'Desconocido'
+    }
+    return prio.nombre
+  }
 
   getSucursales() {
     this.sucursal.getSucursal().subscribe({
@@ -174,6 +192,14 @@ export class ProgramacionPage implements OnInit {
     });
   }
 
+  getpro(){
+    this.programacion.getProgramacion().subscribe({
+      next: (data) => {
+        console.log('Pro cargada', data)
+      }
+    })
+  }
+
   getFinca() {
     this.finca.getFinca().subscribe({
       next: (data) => {
@@ -187,6 +213,31 @@ export class ProgramacionPage implements OnInit {
     });
   }
 
+  getEstado(){
+    this.estado.getEstado().subscribe({
+      next: (data) => {
+        console.log('Dato de estado:', data)
+        this.estados = data
+      },
+      error: (error) => {
+        console.error('Error al cargar el estado', error)
+        this.toastService.presentToast('Error al cargar el estado', 'danger', 'top')
+      }
+    })
+  }
+
+  getPrioridad(){
+    this.prioridad.getPrioridad().subscribe({
+      next: (data) => {
+        console.log('Dato de prioridad', data)
+        this.prioridades = data
+      },
+      error: (error) => {
+        console.error('Error al traer la propiedad')
+      }
+    })
+  }
+
   createOrUpdate() {
     if (this.inputs.valid) {
       const data: any = {
@@ -194,6 +245,18 @@ export class ProgramacionPage implements OnInit {
         usuarioMod: this.authService.getLoggedUserName(),
       };
   
+      const valoresDefecto = {
+        estadoId: 1,
+        signo: 1
+      }
+      
+      for (const key in valoresDefecto) {
+        if (!data[key]) {
+          data[key]= valoresDefecto[key];
+          
+        }
+      }
+
       if (!this.edit) {
         data.usuario = this.authService.getLoggedUserName();
       }
@@ -229,8 +292,6 @@ export class ProgramacionPage implements OnInit {
   
   update(programacion: any) {
     console.log('Datos recibidos en update:', programacion);
-  
-
      // Convertir el formato DD/MM/YYYY a YYYY-MM-DD
     let fechaISO;
     if (programacion.fecha) {
@@ -287,6 +348,32 @@ export class ProgramacionPage implements OnInit {
     });
   }
 
+  getEstadoClass(estado: string): string {
+    switch (estado.toLowerCase()) {
+      case 'pendiente':
+        return 'estado-pendiente';
+      case 'en proceso':
+        return 'estado-en-proceso';
+      case 'realizado':
+        return 'estado-realizado';
+      default:
+        return '';
+    }
+  } 
+  
+  getPrioridadClass(prioridad: string): string {
+    switch (prioridad.toLowerCase()) {
+      case 'alta':
+        return 'prioridad-alta';
+      case 'media':
+        return 'prioridad-media';
+      case 'baja':
+        return 'prioridad-baja';
+      default:
+        return '';
+    }
+  }
+  
   // Nueva función para aplicar filtros
   applyFilters() {
     if (this.filterStartDate && this.filterEndDate) {
@@ -328,7 +415,6 @@ export class ProgramacionPage implements OnInit {
     const selectedDate = Array.isArray(value) ? value[0] : value;
     
     if (type === 'form') {
-      // Asegurarse de que solo tomamos la parte de la fecha (YYYY-MM-DD)
       const fechaCorta = selectedDate.split('T')[0];
       this.inputs.patchValue({
         fecha: fechaCorta
@@ -346,8 +432,13 @@ export class ProgramacionPage implements OnInit {
     this.filterStartDate = '';
     this.filterEndDate = '';
     this.filterSucursal = null;
-    this.filteredProma = [...this.proma]; // Restaurar datos originales
+    this.filteredProma = [...this.proma]; 
   }
+
+
+  /* 
+  Exportacion a exel
+  */
 
   exportFilteredToExcel() {
     if (this.filteredProma.length === 0) {
@@ -363,14 +454,17 @@ export class ProgramacionPage implements OnInit {
       Lote: item.lote,
       Actividad: item.activinom,
       Jornal: item.jornal,
-      Cantidad: item.cantidad,
+      Cantidad: item.cantidades,
       Observacion: item.observacion,
+      Estado: item.estadonom,
+      Prioridad: item.prioridadnom,
       Habilitado: item.habilitado,
       Sincronizado: item.sincronizado,
       "Fecha Sincronizado": item.fecSincronizacion,
       Maquina: item.maquina,
       Usuario: item.usuario,
       "Usuario Modificacion": item.usuarioMod,
+      signo: item.signo
     }));
 
     const worksheet = XLSX.utils.json_to_sheet(dataToExport );

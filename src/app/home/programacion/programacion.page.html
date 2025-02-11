@@ -77,6 +77,7 @@
       <thead>
         <tr>
           <th>ID</th>
+          <th>Programacion</th>
           <th>Sucursal</th>
           <th>Fecha</th>
           <th>Finca</th>
@@ -84,11 +85,13 @@
           <th>Actividad</th>
           <th>Jornal</th>
           <th>Cantidad</th>
+          <th>Estado</th>
+          <th>Prioridad</th>
           <th>Observacion</th>
           <th>Habilitado</th>
-          <th>Sincronizado</th>
+          <!-- <th>Sincronizado</th>
           <th>Fecha Sincronizado</th>
-          <th>Maquina</th>
+          <th>Maquina</th> -->
           <th>Usuario</th>
           <th>Usuario Modificacion</th>
           <th>Acciones</th>
@@ -97,18 +100,31 @@
       <tbody>
         <tr *ngFor="let datos of filteredProma">
           <td>{{ datos.id }}</td>
+          <td>{{ datos.programacion }}</td>
           <td>{{ datos.sucursalnom }}</td>
           <td>{{ datos.fecha }}</td>
           <td>{{ datos.fincanom }}</td>
           <td>{{ datos.lote }}</td>
           <td>{{ datos.activinom }}</td>
           <td>{{ datos.jornal }}</td>
-          <td>{{ datos.cantidad }}</td>
+          <td>{{ datos.cantidades }}</td>
+          <td>
+            <div class="status-indicator" [ngClass]="getEstadoClass(datos.estadonom)">
+              {{ datos.estadonom }}
+              <span></span>
+            </div>
+          </td>
+          <td>
+            <div class="priority-indicator" [ngClass]="getPrioridadClass(datos.prioridadnom)">
+              {{ datos.prioridadnom }}
+              <span></span>
+            </div>
+          </td>
           <td>{{ datos.observacion }}</td>
           <td>{{ datos.habilitado }}</td>
-          <td>{{ datos.sincronizado }}</td>
+          <!-- <td>{{ datos.sincronizado }}</td>
           <td>{{ datos.fecSincronizacion }}</td>
-          <td>{{ datos.maquina }}</td>
+          <td>{{ datos.maquina }}</td> -->
           <td>{{ datos.usuario }}</td>
           <td>{{ datos.usuarioMod }}</td>
           <td>
@@ -132,46 +148,46 @@
             <ion-col size="12">
               <ion-item class="ion-margin">
                 <ion-select interface="popover" placeholder="Selecciona la sucursal"
-                [formControl]="inputs.controls.sucursalId">
-                <ion-select-option *ngFor="let sucursal of sucursales" [value]="sucursal.id">
-                  {{ sucursal.nombre }}
-                </ion-select-option>
-              </ion-select>
-            </ion-item>
-            <div class="error" *ngIf="inputs.controls.sucursalId.errors && inputs.controls.sucursalId.touched">
-              <span *ngIf="inputs.controls.sucursalId.errors?.['required']">La sucursal es obligatoria</span>
-            </div>
-          </ion-col>
+                  [formControl]="inputs.controls.sucursalId">
+                  <ion-select-option *ngFor="let sucursal of sucursales" [value]="sucursal.id">
+                    {{ sucursal.nombre }}
+                  </ion-select-option>
+                </ion-select>
+              </ion-item>
+              <div class="error" *ngIf="inputs.controls.sucursalId.errors && inputs.controls.sucursalId.touched">
+                <span *ngIf="inputs.controls.sucursalId.errors?.['required']">La sucursal es obligatoria</span>
+              </div>
+            </ion-col>
             <ion-col size="12">
               <ion-item class="ion-margin">
                 <ion-select interface="popover" placeholder="Selecciona la Finca"
-                [formControl]="inputs.controls.fincaId">
-                <ion-select-option *ngFor="let finca of fincas" [value]="finca.id">
-                  {{ finca.nombre }}
-                </ion-select-option>
-              </ion-select>
-            </ion-item>
-            <div class="error" *ngIf="inputs.controls.fincaId.errors && inputs.controls.fincaId.touched">
-              <span *ngIf="inputs.controls.fincaId.errors?.['required']">La finca es obligatoria</span>
-            </div>
-          </ion-col>
+                  [formControl]="inputs.controls.fincaId">
+                  <ion-select-option *ngFor="let finca of fincas" [value]="finca.id">
+                    {{ finca.nombre }}
+                  </ion-select-option>
+                </ion-select>
+              </ion-item>
+              <div class="error" *ngIf="inputs.controls.fincaId.errors && inputs.controls.fincaId.touched">
+                <span *ngIf="inputs.controls.fincaId.errors?.['required']">La finca es obligatoria</span>
+              </div>
+            </ion-col>
 
-          <ion-col size="12">
-            <ion-item class="ion-margin">
-              <ion-label position="stacked">Selecciona la fecha.</ion-label>
-              <ion-datetime-button datetime="datetime-modal"  class="ion-margin"></ion-datetime-button>
-              <ion-modal [keepContentsMounted]="true">
-                <ng-template>
-                  <ion-datetime id="datetime-modal" presentation="date"  [formControl]="inputs.controls.fecha"
-                    (ionChange)="onDateChange('form', $event.detail.value)"></ion-datetime>
-                </ng-template>
-              </ion-modal>
-            </ion-item>
-            <div class="error" *ngIf="inputs.controls.fecha.errors && inputs.controls.fecha.touched">
-              <span *ngIf="inputs.controls.fecha.errors?.['required']">La fecha es obligatoria</span>
-            </div>     
+            <ion-col size="12">
+              <ion-item class="ion-margin">
+                <ion-label position="stacked">Selecciona la fecha.</ion-label>
+                <ion-datetime-button datetime="datetime-modal" class="ion-margin"></ion-datetime-button>
+                <ion-modal [keepContentsMounted]="true">
+                  <ng-template>
+                    <ion-datetime id="datetime-modal" presentation="date" [formControl]="inputs.controls.fecha"
+                      (ionChange)="onDateChange('form', $event.detail.value)"></ion-datetime>
+                  </ng-template>
+                </ion-modal>
+              </ion-item>
+              <div class="error" *ngIf="inputs.controls.fecha.errors && inputs.controls.fecha.touched">
+                <span *ngIf="inputs.controls.fecha.errors?.['required']">La fecha es obligatoria</span>
+              </div>
 
-          </ion-col>            
+            </ion-col>
             <ion-col size="12">
               <ion-item class="ion-margin">
                 <ion-select interface="popover" placeholder="Selecciona la Actividad"
@@ -186,6 +202,16 @@
               </div>
             </ion-col>
             <ion-col size="12">
+              <ion-item class="ion-margin">
+                <ion-select interface="popover" placeholder="Seleciona la prioridad"
+                [formControl]="inputs.controls.prioridadId">
+                  <ion-select-option *ngFor="let prioridad of prioridades" [value]="prioridad.id">
+                    {{ prioridad.nombre }}
+                  </ion-select-option>
+                </ion-select>
+              </ion-item>
+            </ion-col>
+            <ion-col size="12">
               <app-custom-input icon="trending-up-outline" label="Ingresa el jornal" type="text" autocomplete="jornal"
                 [control]="inputs.controls.jornal">
               </app-custom-input>
@@ -195,7 +221,7 @@
             </ion-col>
             <ion-col size="12">
               <app-custom-input icon="cash-outline" label="Ingresa la cantidad" type="text" autocomplete="cantidad"
-              [control]="inputs.controls.cantidad"></app-custom-input>
+                [control]="inputs.controls.cantidad"></app-custom-input>
             </ion-col>
             <div class="error" *ngIf="inputs.controls.cantidad.errors && inputs.controls.cantidad.touched">
               <span *ngIf="inputs.controls.cantidad.errors?.['required']">La cantidad es obligatoria</span>

@@ -96,15 +96,15 @@ export class ActividadesPage implements OnInit {
     });
   }
 
-  getnomUni(id: number): string{
-    const uni = this.unidad.find((u) => u.id === id );
+  getnomUni(id: number): string {
+    const uni = this.unidad.find((u) => u.id === id);
     if (!uni) {
       return 'Desconocido'
     }
     return uni.nombre
   }
 
-  getnomSub(id: number) : string {
+  getnomSub(id: number): string {
     const sub = this.subcategoria.find((s) => s.id === id)
     if (!sub) {
       return 'Desconocido'
@@ -130,15 +130,11 @@ export class ActividadesPage implements OnInit {
 
       // console.log(this.update ? 'Datos para actualizar:' : 'Datos para crear:', actividadData);
 
-      const request = this.update
-        ? this.actividadService.update(actividadData)
-        : this.actividadService.createActividad(actividadData);
+      const request = this.update ? this.actividadService.update(actividadData) : this.actividadService.createActividad(actividadData);
 
       request.subscribe({
         next: (response) => {
-          const message = this.update
-            ? 'Actividad actualizada exitosamente'
-            : 'Actividad creada exitosamente';
+          const message = this.update ? 'Actividad actualizada exitosamente' : 'Actividad creada exitosamente';
           // console.log(message, response);
           this.toastService.presentToast(message, 'success', 'top');
           this.showForm = false;
@@ -146,20 +142,14 @@ export class ActividadesPage implements OnInit {
           this.update = false;
         },
         error: (error) => {
-          const message = this.update
-            ? 'Error al actualizar la actividad'
-            : 'Error al crear la actividad';
+          const message = this.update ? 'Error al actualizar la actividad' : 'Error al crear la actividad';
           console.error(message, error);
           this.toastService.presentToast(message, 'danger', 'top');
         },
       });
     } else {
       console.error('Formulario inválido:', this.inputs.errors);
-      this.toastService.presentToast(
-        'Por favor, completa todos los campos correctamente',
-        'danger',
-        'top'
-      );
+      this.toastService.presentToast('Por favor, completa todos los campos correctamente', 'danger', 'top');
     }
   }
 
