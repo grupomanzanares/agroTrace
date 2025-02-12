@@ -1,0 +1,7 @@
+<?xml version='1.0' encoding='utf-8'?>
+<resources>
+    <string name="app_name">agroTrace</string>
+    <string name="title_activity_main">agroTrace</string>
+    <string name="package_name">io.ionic.agroTrace</string>
+    <string name="custom_url_scheme">io.ionic.agroTrace</string>
+</resources>
