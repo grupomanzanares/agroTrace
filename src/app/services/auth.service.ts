@@ -53,4 +53,48 @@ export class AuthService {
       })
     );
   }
+
+
+
+  
+
+  /** Enviar solicitud de recuperación de contraseña */
+  forgotPassword(identificacion: number, email: string): Observable<any> {
+    const url = `${this.apiUrl}auth/forgot-password`;
+    const body = { identificacion, email };
+    return this.http.post<any>(url, body).pipe(
+      catchError((error) => {
+        console.error('Error en la recuperación de contraseña:', error);
+        return throwError(() => new Error('Error al solicitar la recuperación de contraseña. Intente nuevamente.'));
+      })
+    );
+  }
+
+
+  resetPassword(token: string, password: string): Observable<any> {
+    const url = `${this.apiUrl}auth/reset-password`;
+    const body = { token, password };
+    return this.http.post<any>(url, body).pipe(
+      catchError((error) => {
+        console.error('Error en el restablecimiento de contraseña:', error);
+        return throwError(() => new Error('Error al restablecer la contraseña. Intente nuevamente.'));
+      })
+    );
+  }
+
+
+  validateToken(token: string): Observable<any> {
+    const url = `${this.apiUrl}auth/forgot-password/${token}`;
+    return this.http.get<any>(url).pipe(
+      catchError((error) => {
+        console.error('Error validando el token:', error);
+        return throwError(() => new Error('El token de recuperación no es válido o ha expirado.'));
+      })
+    );
+  }
+
+
 }
+
+
+
