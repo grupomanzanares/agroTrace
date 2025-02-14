@@ -15,15 +15,14 @@ export class ForgotPasswordPage implements OnInit {
 
 
   public recoverForm = new FormGroup({
-    'identificacion': new FormControl(null, [Validators.required, Validators.minLength(8), Validators.maxLength(10), Validators.pattern('^[0-9]*$') ]),
-    'email' : new FormControl(null,[Validators.required, Validators.email])
-  })   
+    'identificacion': new FormControl(null, [Validators.required, Validators.minLength(8), Validators.maxLength(10), Validators.pattern('^[0-9]*$')]),
+    'email': new FormControl(null, [Validators.required, Validators.email])
+  })
 
-
-  constructor(   private _router: Router,
-      private _authService: AuthService,
-      private _toastService: ToastService, 
-      private _loadingService: LoadingService) { }
+  constructor(private router: Router,
+    private authService: AuthService,
+    private toastService: ToastService,
+    private loadingService: LoadingService) { }
 
   ngOnInit() {
   }
@@ -31,7 +30,7 @@ export class ForgotPasswordPage implements OnInit {
   async recoverPassword() {
     /** Paso1: Validar formulario */
     if (this.recoverForm.invalid) {
-      this._toastService.presentToast( 'Por favor completa todos los campos correctamente.', 'danger', 'top');
+      this.toastService.presentToast('Por favor completa todos los campos correctamente.', 'danger', 'top');
       return;
     }
 
@@ -41,18 +40,18 @@ export class ForgotPasswordPage implements OnInit {
     email = String(email);
 
     /** Paso3: Mostrar cargador */
-    await this._loadingService.showLoading("Enviando solicitud...");
+    await this.loadingService.showLoading("Enviando solicitud...");
 
     /** Paso4: Enviar solicitud a la API */
-    this._authService.forgotPassword(identificacion, email).subscribe({
+    this.authService.forgotPassword(identificacion, email).subscribe({
       next: async (response) => {
-        await this._loadingService.hideLoading(); /** Ocultar cargador */
-        this._toastService.presentToast( 'Se ha enviado un correo con las instrucciones para recuperar la contraseña.', 'success', 'top');
+        await this.loadingService.hideLoading(); /** Ocultar cargador */
+        this.toastService.presentToast('Se ha enviado un correo con las instrucciones para recuperar la contraseña.', 'success', 'top');
         this.recoverForm.reset(); /** Limpiar formulario */
       },
       error: async (error) => {
-        await this._loadingService.hideLoading(); /** Ocultar cargador */
-        this._toastService.presentToast( 'No se pudo enviar la solicitud. Intenta nuevamente.', 'danger', 'top');
+        await this.loadingService.hideLoading(); /** Ocultar cargador */
+        this.toastService.presentToast('No se pudo enviar la solicitud. Intenta nuevamente.', 'danger', 'top');
         console.error('Error en la recuperación de contraseña:', error);
       }
     });
