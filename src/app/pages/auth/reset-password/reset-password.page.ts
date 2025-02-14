@@ -67,7 +67,7 @@ export class ResetPasswordPage implements OnInit {
       next: async () => {
         await this._loadingService.hideLoading();
         this._toastService.presentToast( 'Contraseña restablecida con éxito.', 'success', 'top');
-        this._router.navigate(['/auth/login']); // Redirigir al login
+        this._router.navigateByUrl('/auth');
       },
       error: async (error) => {
         await this._loadingService.hideLoading();
