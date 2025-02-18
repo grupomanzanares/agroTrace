@@ -12,10 +12,10 @@
     /* Ocupa el espacio restante del contenedor */
     overflow-x: auto;
     /* Scroll horizontal */
-    overflow-y: hidden;
+    // overflow-y: hidden;
     /* Oculta el scroll vertical si no es necesario */
     display: flex;
-    align-items: flex-end;
+    align-items: flex-end;  
     /* Asegura que el scroll horizontal esté al final */
 }
 
