@@ -43,6 +43,11 @@ export class AuthPage implements OnInit {
       next: async (response) => {
         await this.loadinService.hideLoading(); // Ocultar cargador
 
+        if (response.user?.state !== 1) {
+          this.toastService.presentToast('Tu cuenta está inactiva. Contáctate con sistemas.', 'warning', 'top')
+          return
+        }
+
         // Valida que el token esté presente en la respuesta
         if (response.token) {
           const userName = response.user?.name || 'Usuario';
