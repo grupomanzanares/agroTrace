@@ -20,11 +20,11 @@ export class SideMenuComponent implements OnInit {
       case 'actividades':
         this.menuItems = [
           { label: 'Inicio', icon: 'home-outline', route: '/home' },
-          { label: 'Actividad', icon: 'add-circle-outline', route: '/home/actividades' },
+          { label: 'Actividad', icon: 'clipboard-outline', route: '/home/actividades' },
           { label: 'Categoría', icon: 'layers-outline', route: '/home/categoria' },
-          { label: 'Unidad de Medida', icon: 'walk-outline', route: '/home/uni-medida' },
-          { label: 'Sub Categoria', icon: 'apps-outline', route: '/home/subcategoria' },
-          { label: 'Programacion', icon: 'diamond-outline', route: '/home/programacion' }
+          { label: 'Unidad de Medida', icon: 'speedometer-outline', route: '/home/uni-medida' },
+          { label: 'Sub Categoria', icon: 'grid-outline', route: '/home/subcategoria' },
+          { label: 'Programacion', icon: 'calendar-outline', route: '/home/programacion' }
         ];
         break;
 
