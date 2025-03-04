@@ -18,7 +18,6 @@ export class ActividadService {
     const headers = new HttpHeaders({
       Authorization: `Bearer ${token}`
     })
-    const body = {};
     return this.http.get<any>(url, { headers }).pipe(
       catchError((error) => {
         console.error('Error en la autenticacion: ', error)
@@ -68,6 +67,8 @@ export class ActividadService {
       ...actividad,
       controlPorLote: actividad.controlPorLote === 1 ? true : false,
     };
+
+    console.log(body)
 
     return this.http.put<any>(url, body, { headers }).pipe(
       catchError((error) => {

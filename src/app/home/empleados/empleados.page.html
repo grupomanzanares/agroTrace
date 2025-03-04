@@ -1,0 +1,83 @@
+<app-header title="Trabajadores" [showMenu]="true"></app-header>
+<app-side-menu [section]="'actividades'"></app-side-menu>
+
+<ion-content id="main-content">
+  <ion-grid fixed>
+    <div *ngIf="!showForm">
+      <ion-row>
+        <ion-col size="6" *ngFor="let item of trabajadores">
+          <ion-card>
+            <ion-card-header>
+              <ion-card-title>{{ item.nombre }}</ion-card-title>
+              <ion-card-subtitle>
+                <strong>NIT :</strong> {{ item.nit }}
+              </ion-card-subtitle>
+            </ion-card-header>
+            <ion-card-content>
+              <!-- <p><strong>Descripción</strong> {{ item.descripcion }}</p> -->
+            </ion-card-content>
+            <ion-row class="ion-justify-content-center">
+              <ion-col size="auto">
+                <ion-button fill="clear" color="warning" (click)="editTrabajador(item)">
+                  <ion-icon name="create-outline" slot="start"></ion-icon> Editar
+                </ion-button>
+              </ion-col>
+              <ion-col size="auto">
+                <ion-button fill="clear" color="danger" (click)="delete(item.id)">
+                  <ion-icon name="trash-outline" slot="start"></ion-icon> Eliminar
+                </ion-button>
+              </ion-col>
+            </ion-row>
+          </ion-card>
+        </ion-col>
+      </ion-row>
+    </div>
+  </ion-grid>
+
+  <div *ngIf="showForm" [formGroup]="inputs">
+    <ion-grid fixed>
+      <ion-row>
+        <ion-col size="12">
+          <app-custom-input icon="id-card-outline" label="Ingresa el nit del trabajador" type="text" autocomplete="nit"
+            [control]="inputs.controls.nit">
+          </app-custom-input>
+          <div class="error" *ngIf="inputs.controls.nit.errors && inputs.controls.nit.touched">
+            <span *ngIf="inputs.controls.nit.errors?.['required']">La cedula es obligatoria</span>
+            <span *ngIf="inputs.controls.nit.errors?.['minlength']">Deve tener almenos 8 caracteres</span>
+            <span *ngIf="inputs.controls.nit.errors?.['maxlength']">Deve tener maximo 10 caracteres</span>
+          </div>
+        </ion-col>
+
+        <ion-col size="12">
+          <app-custom-input icon="person-outline" label="Ingresa el nombre del trabajador" type="text"
+            autocomplete="nombre" [control]="inputs.controls.nombre">
+          </app-custom-input>
+          <div class="error" *ngIf="inputs.controls.nombre.errors && inputs.controls.nombre.touched">
+            <span *ngIf="inputs.controls.nombre.errors?.['required']">El nombre es obligatorio</span>
+            <span *ngIf="inputs.controls.nombre.errors?.['minlength']">Debe tener al menos 3 caracteres</span>
+          </div>
+        </ion-col>
+
+        <ion-col size="12">
+          <ion-item>
+            <ion-select interface="popover" placeholder="Selecciona tu tipo de documento"
+              formControlName="tipoIdentificacion">
+              <ion-select-option *ngFor="let item of identificacion" [value]="item.id">
+                {{ item.nombre }}
+              </ion-select-option>
+            </ion-select>
+          </ion-item>
+        </ion-col>
+
+      </ion-row>
+      <ion-button class="ion-margin-top" expand="block" color="primary" (click)="createOrUpdate()">Guardar</ion-button>
+      <ion-button class="ion-margin-top" expand="block" color="danger" (click)="onCloseForm()">Volver</ion-button>
+    </ion-grid>
+  </div>
+
+  <ion-fab slot="fixed" vertical="bottom" horizontal="end" *ngIf="!showForm">
+    <ion-fab-button (click)="onShowForm()" size="small" color="success">
+      <ion-icon name="add"></ion-icon>
+    </ion-fab-button>
+  </ion-fab>
+</ion-content>

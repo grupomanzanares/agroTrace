@@ -21,6 +21,7 @@ export class SideMenuComponent implements OnInit {
         this.menuItems = [
           { label: 'Inicio', icon: 'home-outline', route: '/home' },
           { label: 'Actividad', icon: 'clipboard-outline', route: '/home/actividades' },
+          { label: 'Empleados', icon: 'people-outline', route: '/home/empleados' },
           { label: 'Categoría', icon: 'layers-outline', route: '/home/categoria' },
           { label: 'Unidad de Medida', icon: 'speedometer-outline', route: '/home/uni-medida' },
           { label: 'Sub Categoria', icon: 'grid-outline', route: '/home/subcategoria' },

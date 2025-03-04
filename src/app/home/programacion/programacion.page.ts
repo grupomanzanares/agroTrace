@@ -11,6 +11,8 @@ import * as XLSX from 'xlsx';
 import { saveAs } from 'file-saver';
 import { EstadoService } from 'src/app/services/estado.service';
 import { PrioridadService } from 'src/app/services/prioridad.service';
+import { EmpleadoService } from 'src/app/services/empleado.service';
+import { UsersService } from 'src/app/services/users.service';
 
 @Component({
   selector: 'app-programacion',
@@ -24,7 +26,9 @@ export class ProgramacionPage implements OnInit {
   actividades: any[] = [];
   fincas: any[] = [];
   estados: any[] = [];
-  prioridades: any [] = [];
+  prioridades: any[] = [];
+  trabajadores: any[] = []
+  usuarios: any[] = []
   public showForm: boolean;
   public edit: boolean = false;
   public selecProgramacion: any = null;
@@ -34,6 +38,7 @@ export class ProgramacionPage implements OnInit {
   filterStartDate: string = '';
   filterEndDate: string = '';
   filterSucursal: number | null = null;
+  filterFinca: number | null = null;
 
   public inputs = new FormGroup({
     sucursalId: new FormControl(null, [Validators.required]),
@@ -42,7 +47,8 @@ export class ProgramacionPage implements OnInit {
     actividadId: new FormControl('', [Validators.required]),
     jornal: new FormControl('', [Validators.required]),
     cantidad: new FormControl('', [Validators.required]),
-    prioridadId: new FormControl('', [Validators.required])
+    prioridadId: new FormControl('', [Validators.required]),
+    responsableId: new FormControl('', [Validators.required])
   });
 
   constructor(
@@ -53,7 +59,9 @@ export class ProgramacionPage implements OnInit {
     private actividad: ActividadService,
     private finca: FincaService,
     private estado: EstadoService,
-    private prioridad: PrioridadService
+    private prioridad: PrioridadService,
+    private trabajador: EmpleadoService,
+    private usuario: UsersService
   ) {
     this.showForm = false;
   }
@@ -66,8 +74,12 @@ export class ProgramacionPage implements OnInit {
     this.getPromagacion();
     this.getEstado()
     this.getPrioridad()
+    this.getTrabajadores()
+    this.getResponsables()
     const today = new Date().toISOString().slice(0, 10);
     this.inputs.controls.fecha.setValue(today)
+    this.filterStartDate = today;
+    this.filterEndDate = today;  
   }
 
   onShowForm() {
@@ -100,6 +112,8 @@ export class ProgramacionPage implements OnInit {
           fincanom: this.getFincaNom(item.fincaId),
           estadonom: this.getEstNom(item.estadoId),
           prioridadnom: this.getProNom(item.prioridadId),
+          responsablenom: this.getUsuNom(item.responsableId),
+          trabajadornom: this.getTraNom(item.trabajador),
           originalFecha: new Date(item.fecha), // Almacena el valor original como Date
           originalFecSincronizacion: new Date(item.fecSincronizacion),
           fecha: this.formatDate(item.fecha), // Formato para visualización
@@ -121,6 +135,7 @@ export class ProgramacionPage implements OnInit {
   private formatDate(dateString: string): string {
     if (!dateString) return 'N/A'; // Manejar valores nulos o indefinidos
     const date = new Date(dateString);
+    date.setDate(date.getDate() + 1)
     const options: Intl.DateTimeFormatOptions = { year: 'numeric', month: '2-digit', day: '2-digit', };
     return date.toLocaleDateString('es-ES', options); // Formato DD/MM/YYYY para español
   }
@@ -133,7 +148,7 @@ export class ProgramacionPage implements OnInit {
     }
     return sucursal.nombre;
   }
-  
+
   getActividadNom(id: number): string {
     const activi = this.actividades.find((a) => a.id === id);
     if (!activi) {
@@ -141,7 +156,7 @@ export class ProgramacionPage implements OnInit {
     }
     return activi.nombre;
   }
-  
+
   getFincaNom(id: number): string {
     const finca = this.fincas.find((f) => f.id === id);
     if (!finca) {
@@ -158,12 +173,28 @@ export class ProgramacionPage implements OnInit {
     return estado.nombre
   }
 
-  getProNom(id: number): string{
-    const prio = this.prioridades.find((p) => p.id === id )
+  getProNom(id: number): string {
+    const prio = this.prioridades.find((p) => p.id === id)
     if (!prio) {
       return 'Desconocido'
     }
     return prio.nombre
+  }
+
+  getTraNom(id: number): string {
+    const tra = this.trabajadores.find((p) => p.id === id)
+    if (!tra) {
+      return ''
+    }
+    return tra.nombre
+  }
+
+  getUsuNom(id: number): string {
+    const usu = this.usuarios.find((u) => u.id === id)
+    if (!usu) {
+      return ''
+    }
+    return usu.name
   }
 
   getSucursales() {
@@ -192,7 +223,7 @@ export class ProgramacionPage implements OnInit {
     });
   }
 
-  getpro(){
+  getpro() {
     this.programacion.getProgramacion().subscribe({
       next: (data) => {
         console.log('Pro cargada', data)
@@ -213,7 +244,7 @@ export class ProgramacionPage implements OnInit {
     });
   }
 
-  getEstado(){
+  getEstado() {
     this.estado.getEstado().subscribe({
       next: (data) => {
         console.log('Dato de estado:', data)
@@ -226,7 +257,7 @@ export class ProgramacionPage implements OnInit {
     })
   }
 
-  getPrioridad(){
+  getPrioridad() {
     this.prioridad.getPrioridad().subscribe({
       next: (data) => {
         console.log('Dato de prioridad', data)
@@ -238,41 +269,73 @@ export class ProgramacionPage implements OnInit {
     })
   }
 
+  getTrabajadores() {
+    this.trabajador.getTrabajador().subscribe({
+      next: (data) => {
+        console.log('Datos de trabajadores', data)
+        this.trabajadores = data
+      },
+      error: (error) => {
+        console.error('Error al traer trabajadores')
+      }
+    })
+  }
+
+  getResponsables() {
+    this.usuario.getUsers().subscribe({
+      next: (data) => {
+        console.log('Datos de usuarios ', data)
+        this.usuarios = data
+      }, error: (error) => {
+        console.error('Error al traer a los usuarios')
+      }
+    })
+  }
+
   createOrUpdate() {
     if (this.inputs.valid) {
       const data: any = {
         ...this.inputs.value,
         usuarioMod: this.authService.getLoggedUserName(),
       };
-  
+
+      if (data.fecha) {
+        const fechaOriginal = new Date(data.fecha);
+        data.fecha = new Date(fechaOriginal.getTime() + fechaOriginal.getTimezoneOffset() * 60000)
+          .toISOString()
+          .split('T')[0];
+      }      
+
       const valoresDefecto = {
         estadoId: 1,
         signo: 1
       }
-      
+
       for (const key in valoresDefecto) {
         if (!data[key]) {
-          data[key]= valoresDefecto[key];
-          
+          data[key] = valoresDefecto[key];
+
         }
       }
 
       if (!this.edit) {
         data.usuario = this.authService.getLoggedUserName();
       }
-  
+
       if (this.edit) {
         data.id = this.selecProgramacion.id;
       }
 
       console.log('Fecha seleccionada:', this.inputs.controls.fecha.value);
-  
+
       const request = this.edit ? this.programacion.update(data) : this.programacion.create(data);
-  
+
+      console.log(data)
+
       request.subscribe({
         next: () => {
           const message = this.edit ? 'Programacion actualizada exitosamente' : 'Programacion creada exitosamente';
-  
+
           this.toastService.presentToast(message, 'success', 'top');
           this.showForm = false;
           this.getPromagacion();
@@ -289,10 +352,10 @@ export class ProgramacionPage implements OnInit {
       this.toastService.presentToast('Por favor, completa todos los campos correctamente', 'danger', 'top');
     }
   }
-  
+
   update(programacion: any) {
     console.log('Datos recibidos en update:', programacion);
-     // Convertir el formato DD/MM/YYYY a YYYY-MM-DD
+    // Convertir el formato DD/MM/YYYY a YYYY-MM-DD
     let fechaISO;
     if (programacion.fecha) {
       try {
@@ -305,7 +368,7 @@ export class ProgramacionPage implements OnInit {
         fechaISO = new Date().toISOString().split('T')[0]; // Usar fecha actual como fallback
       }
     }
-  
+
     this.inputs.patchValue({
       sucursalId: programacion.sucursalId,
       fecha: fechaISO,
@@ -315,7 +378,7 @@ export class ProgramacionPage implements OnInit {
       cantidad: programacion.cantidad,
     });
     console.log(programacion.fecha)
-  
+
     console.log('Valor actual del control fecha:', this.inputs.get('fecha').value);
 
 
@@ -359,8 +422,8 @@ export class ProgramacionPage implements OnInit {
       default:
         return '';
     }
-  } 
-  
+  }
+
   getPrioridadClass(prioridad: string): string {
     switch (prioridad.toLowerCase()) {
       case 'alta':
@@ -373,12 +436,15 @@ export class ProgramacionPage implements OnInit {
         return '';
     }
   }
-  
+
   // Nueva función para aplicar filtros
   applyFilters() {
     if (this.filterStartDate && this.filterEndDate) {
       const startDate = new Date(this.filterStartDate);
+      startDate.setHours(0, 0, 0, 0); // Asegura inicio del día
+
       const endDate = new Date(this.filterEndDate);
+      endDate.setHours(23, 59, 59, 999); // Asegura el final del día
 
       if (startDate > endDate) {
         this.toastService.presentToast('La fecha de inicio no puede ser mayor que la fecha de fin', 'danger', 'top');
@@ -387,18 +453,15 @@ export class ProgramacionPage implements OnInit {
     }
 
     this.filteredProma = this.proma.filter((item) => {
-      const itemDate = item.originalFecha.getTime(); // Usa la fecha original
+      const itemDate = new Date(item.originalFecha); // Usar la fecha original
+      itemDate.setHours(12, 0, 0, 0); // Normalizar a medio día para evitar desfases por zona horaria
 
-      const matchesStartDate =
-        !this.filterStartDate || itemDate >= new Date(this.filterStartDate).getTime();
+      const matchesStartDate = !this.filterStartDate || itemDate >= new Date(this.filterStartDate);
+      const matchesEndDate = !this.filterEndDate || itemDate <= new Date(this.filterEndDate);
+      const matchesSucursal = !this.filterSucursal || item.sucursalId === this.filterSucursal;
+      const matchesFinca = !this.filterFinca || item.fincaId === this.filterFinca;
 
-      const matchesEndDate =
-        !this.filterEndDate || itemDate <= new Date(this.filterEndDate).getTime();
-
-      const matchesSucursal =
-        !this.filterSucursal || item.sucursalId === this.filterSucursal;
-
-      return matchesStartDate && matchesEndDate && matchesSucursal;
+      return matchesStartDate && matchesEndDate && matchesSucursal && matchesFinca;
     });
 
     if (this.filteredProma.length === 0) {
@@ -408,12 +471,11 @@ export class ProgramacionPage implements OnInit {
     }
   }
 
-
   onDateChange(type: 'form' | 'start' | 'end', value: string | string[]) {
     console.log('Fecha recibida en onDateChange:', value);
-    
+
     const selectedDate = Array.isArray(value) ? value[0] : value;
-    
+
     if (type === 'form') {
       const fechaCorta = selectedDate.split('T')[0];
       this.inputs.patchValue({
@@ -429,12 +491,16 @@ export class ProgramacionPage implements OnInit {
 
   // Nueva función para restablecer los filtros
   resetFilters() {
-    this.filterStartDate = '';
-    this.filterEndDate = '';
+    const today = new Date().toISOString().split('T')[0]; // Obtener la fecha actual en formato YYYY-MM-DD
+    this.filterStartDate = today;
+    this.filterEndDate = today;
     this.filterSucursal = null;
-    this.filteredProma = [...this.proma]; 
+    this.filterFinca = null;
+    this.filteredProma = [...this.proma];
+  
+    console.log('Filtros restablecidos a hoy:', today);
   }
-
+  
 
   /* 
   Exportacion a exel
@@ -452,6 +518,7 @@ export class ProgramacionPage implements OnInit {
       Fecha: item.fecha,
       Finca: item.fincanom,
       Lote: item.lote,
+      Trabajador: item.trabajadornom,
       Actividad: item.activinom,
       Jornal: item.jornal,
       Cantidad: item.cantidades,
@@ -461,14 +528,13 @@ export class ProgramacionPage implements OnInit {
       Habilitado: item.habilitado,
       Sincronizado: item.sincronizado,
       "Fecha Sincronizado": item.fecSincronizacion,
-      Maquina: item.maquina,
       Usuario: item.usuario,
       "Usuario Modificacion": item.usuarioMod,
       signo: item.signo
     }));
 
-    const worksheet = XLSX.utils.json_to_sheet(dataToExport );
-    const colWidths = this.calculateColumnWidths(dataToExport );
+    const worksheet = XLSX.utils.json_to_sheet(dataToExport);
+    const colWidths = this.calculateColumnWidths(dataToExport);
     worksheet['!cols'] = colWidths;
 
     const workbook = XLSX.utils.book_new();

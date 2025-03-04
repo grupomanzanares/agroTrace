@@ -19,6 +19,9 @@
                 <strong>Control por lotes:</strong> 
                 {{ item.controlPorLote ? 'Sí' : 'No' }}
               </p>
+              <p><strong>Control por trabajador</strong>
+                {{ item.controlPorTrabajador ? 'Sí' : 'No' }}
+              </p>
               <p><strong>Unidad:</strong> {{ item.unidnombre }}</p>
               <p><strong>Subcategoría:</strong> {{ item.subcatenom }}</p>
             </ion-card-content>
@@ -43,7 +46,7 @@
       <ion-grid fixed>
         <ion-row>
           <ion-col size="12">
-            <app-custom-input icon="clipboard-outlin" label="Ingresa el nombre de la actividad" type="text"
+            <app-custom-input icon="clipboard-outline" label="Ingresa el nombre de la actividad" type="text"
               autocomplete="nombre" [control]="inputs.controls.nombre">
             </app-custom-input>
             <div class="error" *ngIf="inputs.controls.nombre.errors && inputs.controls.nombre.touched">
@@ -75,6 +78,16 @@
 
           <ion-col size="12">
             <ion-item>
+              <ion-label>Control por trabajador</ion-label>
+              <ion-radio-group formControlName="controlPorTrabajador">
+                <ion-radio slot="start" [value]="1">Sí</ion-radio>
+                <ion-radio class="ion-margin" slot="start" [value]="0">No</ion-radio>
+              </ion-radio-group>
+            </ion-item>
+          </ion-col>
+
+          <ion-col size="12">
+            <ion-item>
               <ion-select interface="popover" placeholder="Seleccionar Unidad" formControlName="unidadId">
                 <ion-select-option *ngFor="let row of unidad" [value]="row.id">
                   {{ row.nombre }}
@@ -85,6 +98,15 @@
               <span *ngIf="inputs.controls.unidadId.errors?.['required']">Debe seleccionar una unidad</span>
             </div>
           </ion-col>
+
+          <!-- <ion-col class="ion-margin" size="12">
+            <ion-list>
+              <ion-item *ngFor="let row of unidad">
+                <ion-label>{{ row.nombre }}</ion-label>
+                <ion-checkbox ></ion-checkbox>
+              </ion-item>
+            </ion-list>
+          </ion-col> -->
 
           <ion-col size="12">
             <ion-item>

@@ -25,6 +25,7 @@ export class ActividadesPage implements OnInit {
     controlPorLote: new FormControl(0, [Validators.required]),
     unidadId: new FormControl(null, [Validators.required]),
     subCategoriaId: new FormControl(null, [Validators.required]),
+    controlPorTrabajador: new FormControl(0, [Validators.required])
   });
 
   constructor(
@@ -63,6 +64,7 @@ export class ActividadesPage implements OnInit {
           unidnombre: this.getnomUni(item.unidadId),
           subcatenom: this.getnomSub(item.subCategoriaId),
           controlPorLote: item.controlPorLote ? 1 : 0,
+          controlPorTrabajador: item.controlPorTrabajador ? 1 : 0
         }));
         // console.log('Datos de Actividades:', this.actividad);
       },
@@ -159,6 +161,7 @@ export class ActividadesPage implements OnInit {
       nombre: actividad.nombre,
       descripcion: actividad.descripcion,
       controlPorLote: actividad.controlPorLote ? 1 : 0,
+      controlPorTrabajador: actividad.controlPorTrabajador ? 1 : 0,
       unidadId: actividad.unidadId,
       subCategoriaId: actividad.subCategoriaId,
     });

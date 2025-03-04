@@ -3,22 +3,22 @@
 
 <ion-content id="main-content">
   <!-- Formulario de Filtros -->
-  <div class="ion-margin-top" *ngIf="!showForm">
-    <ion-button expand="block" color="tertiary" (click)="toggleFilters()">
+  <div class="ion-margin" *ngIf="!showForm">
+    <ion-button expand="block" style="--background: #00a4f3;" (click)="toggleFilters()">
       {{ showFilters ? 'Ocultar Filtros' : 'Buscar' }}
     </ion-button>
   </div>
-  <div *ngIf="showFilters">
+  <div *ngIf="showFilters" class="ion-margin">
     <ion-grid>
       <ion-row>
         <!-- Fecha Inicio -->
-        <ion-col size="6" size-md="4" size-lg="3">
+        <ion-col size="6" size-lg="3">
           <ion-item>
             <ion-label position="stacked">Fecha Inicio</ion-label>
             <ion-datetime-button datetime="datetime-start" class="ion-margin"></ion-datetime-button>
             <ion-modal [keepContentsMounted]="true">
               <ng-template>
-                <ion-datetime id="datetime-start" presentation="date"
+                <ion-datetime id="datetime-start" presentation="date" [(ngModel)]="filterStartDate"
                   (ionChange)="onDateChange('start', $event.detail.value)"></ion-datetime>
               </ng-template>
             </ion-modal>
@@ -26,13 +26,13 @@
         </ion-col>
 
         <!-- Fecha Fin -->
-        <ion-col size="6" size-md="4" size-lg="3">
+        <ion-col size="6" size-lg="3">
           <ion-item>
             <ion-label position="stacked">Fecha Fin</ion-label>
             <ion-datetime-button datetime="datetime-end" class="ion-margin"></ion-datetime-button>
             <ion-modal [keepContentsMounted]="true">
               <ng-template>
-                <ion-datetime id="datetime-end" presentation="date"
+                <ion-datetime id="datetime-end" presentation="date" [(ngModel)]="filterEndDate"
                   (ionChange)="onDateChange('end', $event.detail.value)"></ion-datetime>
               </ng-template>
             </ion-modal>
@@ -40,7 +40,7 @@
         </ion-col>
 
         <!-- Sucursal -->
-        <ion-col size="12" size-md="4" size-lg="3">
+        <ion-col size="6" size-lg="3">
           <ion-item>
             <ion-label position="stacked">Sucursal</ion-label>
             <ion-select class="ion-margin-top" interface="popover" [(ngModel)]="filterSucursal"
@@ -51,14 +51,27 @@
             </ion-select>
           </ion-item>
         </ion-col>
+
+        <ion-col size="6" size-lg="3">
+          <ion-item>
+            <ion-label position="stacked">Finca</ion-label>
+            <ion-select class="ion-margin-top" interface="popover" [(ngModel)]="filterFinca"
+              placeholder="Selecciona una finca">
+              <ion-select-option *ngFor="let finca of fincas" [value]="finca.id">
+                {{ finca.nombre }}
+              </ion-select-option>
+            </ion-select>
+          </ion-item>
+        </ion-col>
       </ion-row>
+
 
       <ion-row>
         <ion-col size="6">
-          <ion-button expand="block" color="primary" (click)="applyFilters()">Aplicar Filtro</ion-button>
+          <ion-button expand="block" style="--background: #00a4f3;" (click)="applyFilters()">Aplicar Filtro</ion-button>
         </ion-col>
         <ion-col size="6">
-          <ion-button expand="block" color="medium" (click)="resetFilters()">Limpiar Filtro</ion-button>
+          <ion-button expand="block" fill="clear" (click)="resetFilters()">Limpiar Filtro</ion-button>
         </ion-col>
       </ion-row>
       <div class="ion-margin-top" *ngIf="filteredProma.length > 0">
@@ -82,6 +95,8 @@
           <th>Fecha</th>
           <th>Finca</th>
           <th>Lote</th>
+          <th>Trabajador</th>
+          <th>Responsable</th>
           <th>Actividad</th>
           <th>Jornal</th>
           <th>Cantidad</th>
@@ -105,6 +120,8 @@
           <td>{{ datos.fecha }}</td>
           <td>{{ datos.fincanom }}</td>
           <td>{{ datos.lote }}</td>
+          <td>{{ datos.trabajadornom }}</td>
+          <td>{{ datos.responsablenom }}</td>
           <td>{{ datos.activinom }}</td>
           <td>{{ datos.jornal }}</td>
           <td>{{ datos.cantidades }}</td>
@@ -145,6 +162,7 @@
       <ion-row>
         <ion-grid fixed>
           <ion-row>
+
             <ion-col size="12">
               <ion-item class="ion-margin">
                 <ion-select interface="popover" placeholder="Selecciona la sucursal"
@@ -158,6 +176,7 @@
                 <span *ngIf="inputs.controls.sucursalId.errors?.['required']">La sucursal es obligatoria</span>
               </div>
             </ion-col>
+
             <ion-col size="12">
               <ion-item class="ion-margin">
                 <ion-select interface="popover" placeholder="Selecciona la Finca"
@@ -169,6 +188,20 @@
               </ion-item>
               <div class="error" *ngIf="inputs.controls.fincaId.errors && inputs.controls.fincaId.touched">
                 <span *ngIf="inputs.controls.fincaId.errors?.['required']">La finca es obligatoria</span>
+              </div>
+            </ion-col>
+
+            <ion-col size="12">
+              <ion-item class="ion-margin">
+                <ion-select interface="popover" placeholder="Seleciona al responsable"
+                  [formControl]="inputs.controls.responsableId">
+                  <ion-select-option *ngFor="let usuario of usuarios" [value]="usuario.id">
+                    {{ usuario.name }}
+                  </ion-select-option>
+                </ion-select>
+              </ion-item>
+              <div class="error" *ngIf="inputs.controls.responsableId.errors && inputs.controls.responsableId.touched">
+                <span *ngIf="inputs.controls.responsableId.errors?.['required']">El Respponsable es obligatorio</span>
               </div>
             </ion-col>
 
@@ -204,7 +237,7 @@
             <ion-col size="12">
               <ion-item class="ion-margin">
                 <ion-select interface="popover" placeholder="Seleciona la prioridad"
-                [formControl]="inputs.controls.prioridadId">
+                  [formControl]="inputs.controls.prioridadId">
                   <ion-select-option *ngFor="let prioridad of prioridades" [value]="prioridad.id">
                     {{ prioridad.nombre }}
                   </ion-select-option>

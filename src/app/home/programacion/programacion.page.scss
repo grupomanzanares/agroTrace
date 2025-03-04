@@ -6,13 +6,17 @@
     /* Viewport Height */
 }
 
+.color {
+    background-color: #00a4f3;
+}
+
 /* Contenedor de la tabla que ocupa todo el espacio restante */
 .table-wrapper {
     flex: 1;
     /* Ocupa el espacio restante del contenedor */
     overflow-x: auto;
     /* Scroll horizontal */
-    // overflow-y: hidden;
+    overflow-y: hidden;
     /* Oculta el scroll vertical si no es necesario */
     display: flex;
     align-items: flex-end;  
@@ -22,7 +26,7 @@
 .sync-table {
     width: 80%;
     border-collapse: collapse;
-    margin: 70px auto;
+    margin: 40px auto;
     font-size: 0.9em;
     min-width: 400px;
     border-radius: 10px 10px 0 0;
@@ -40,7 +44,7 @@
 
 .sync-table th,
 .sync-table td {
-    padding: 15px 30px;
+    padding: 3px 15px;
 }
 
 .sync-table tbody {
