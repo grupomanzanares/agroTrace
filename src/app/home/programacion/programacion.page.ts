@@ -514,11 +514,13 @@ export class ProgramacionPage implements OnInit {
 
     const dataToExport = this.filteredProma.map(item => ({
       ID: item.id,
+      Programacion: item.programacion,
       Sucursal: item.sucursalnom,
       Fecha: item.fecha,
       Finca: item.fincanom,
       Lote: item.lote,
       Trabajador: item.trabajadornom,
+      Responsable: item.responsablenom,
       Actividad: item.activinom,
       Jornal: item.jornal,
       Cantidad: item.cantidades,
