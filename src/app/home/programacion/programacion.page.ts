@@ -29,6 +29,7 @@ export class ProgramacionPage implements OnInit {
   prioridades: any[] = [];
   trabajadores: any[] = []
   usuarios: any[] = []
+  userRol = localStorage.getItem('rol')
   public showForm: boolean;
   public edit: boolean = false;
   public selecProgramacion: any = null;
@@ -42,6 +43,7 @@ export class ProgramacionPage implements OnInit {
 
   public inputs = new FormGroup({
     sucursalId: new FormControl(null, [Validators.required]),
+    estadoId: new FormControl(null),
     fincaId: new FormControl(null, [Validators.required]),
     fecha: new FormControl('', [Validators.required]),
     actividadId: new FormControl('', [Validators.required]),
@@ -371,6 +373,9 @@ export class ProgramacionPage implements OnInit {
 
     this.inputs.patchValue({
       sucursalId: programacion.sucursalId,
+      estadoId: programacion.estadoId,
+      prioridadId: programacion.prioridadId,
+      responsableId: programacion.responsableId,
       fecha: fechaISO,
       fincaId: programacion.fincaId,
       actividadId: programacion.actividadId,

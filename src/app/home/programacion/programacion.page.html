@@ -163,8 +163,22 @@
         <ion-grid fixed>
           <ion-row>
 
+            <ion-col size="12" *ngIf="selecProgramacion && (userRol === '1' || userRol === '2')">
+              <ion-item class="ion-margin">
+                <ion-label position="floating">Estado</ion-label>
+                <ion-select interface="popover" placeholder="Selecciona el estado"
+                  [formControl]="inputs.controls.estadoId">
+                  <!-- <ion-select-option *ngFor="let estado of estados" [value]="estado.id">
+                    {{ estado.nombre }}
+                  </ion-select-option> -->
+                <ion-select-option value="3">Realizado</ion-select-option>
+                </ion-select>
+              </ion-item>
+            </ion-col>
+
             <ion-col size="12">
               <ion-item class="ion-margin">
+                <ion-label position="floating" *ngIf="selecProgramacion">Sucursal</ion-label>
                 <ion-select interface="popover" placeholder="Selecciona la sucursal"
                   [formControl]="inputs.controls.sucursalId">
                   <ion-select-option *ngFor="let sucursal of sucursales" [value]="sucursal.id">
@@ -179,6 +193,7 @@
 
             <ion-col size="12">
               <ion-item class="ion-margin">
+                <ion-label position="floating" *ngIf="selecProgramacion">Finca</ion-label>
                 <ion-select interface="popover" placeholder="Selecciona la Finca"
                   [formControl]="inputs.controls.fincaId">
                   <ion-select-option *ngFor="let finca of fincas" [value]="finca.id">
@@ -193,6 +208,7 @@
 
             <ion-col size="12">
               <ion-item class="ion-margin">
+                <ion-label position="floating" *ngIf="selecProgramacion">Responsable</ion-label>
                 <ion-select interface="popover" placeholder="Seleciona al responsable"
                   [formControl]="inputs.controls.responsableId">
                   <ion-select-option *ngFor="let usuario of usuarios" [value]="usuario.id">
@@ -223,6 +239,7 @@
             </ion-col>
             <ion-col size="12">
               <ion-item class="ion-margin">
+                <ion-label position="floating" *ngIf="selecProgramacion">Actividad</ion-label>
                 <ion-select interface="popover" placeholder="Selecciona la Actividad"
                   [formControl]="inputs.controls.actividadId">
                   <ion-select-option *ngFor="let actividad of actividades" [value]="actividad.id">
@@ -236,6 +253,7 @@
             </ion-col>
             <ion-col size="12">
               <ion-item class="ion-margin">
+                <ion-label position="floating" *ngIf="selecProgramacion">Prioridad</ion-label>
                 <ion-select interface="popover" placeholder="Seleciona la prioridad"
                   [formControl]="inputs.controls.prioridadId">
                   <ion-select-option *ngFor="let prioridad of prioridades" [value]="prioridad.id">

@@ -43,9 +43,9 @@
 
             <div class="error" *ngIf="registerForm.controls.celphone.errors && registerForm.controls.celphone.touched">
                 <span *ngIf="registerForm.controls.celphone.errors?.['required']">El telefono es obligatorio</span>
-                <span *ngIf="registerForm.controls.celphone.errors?.['minlength']">El telefono debe tener almenos 8
+                <span *ngIf="registerForm.controls.celphone.errors?.['minlength']">El telefono debe tener 10
                     numeros</span>
-                <span *ngIf="registerForm.controls.celphone.errors?.['maxlength']">El telefono debe tener maximo 10
+                <span *ngIf="registerForm.controls.celphone.errors?.['maxlength']">El telefono debe tener 10
                     numeros</span>
                 <span *ngIf="registerForm.controls.celphone.errors?.['pattern']">El telefono solo debe contener
                     numeros</span>

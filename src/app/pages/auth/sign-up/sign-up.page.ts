@@ -21,8 +21,10 @@ export class SignUpPage implements OnInit {
   public registerForm = new FormGroup({
     identificacion: new FormControl(null, [Validators.required, Validators.minLength(8), Validators.maxLength(10), Validators.pattern('^[0-9]*$')]),
     name: new FormControl(null, [Validators.minLength(4), Validators.pattern('^[a-zA-Z\\s]*$')]),
-    email: new FormControl(null, [Validators.email]), celphone: new FormControl(null, [Validators.minLength(8), Validators.maxLength(10), Validators.pattern('^[0-9]*$')]),
+    email: new FormControl(null, [Validators.email]), 
+    celphone: new FormControl(null, [Validators.minLength(10), Validators.maxLength(10), Validators.pattern('^[0-9]*$')]),
     password: new FormControl(null, [Validators.required, Validators.minLength(10), Validators.maxLength(18)]),
+    rolId: new FormControl(3)
   });
   
   constructor(
@@ -48,6 +50,7 @@ export class SignUpPage implements OnInit {
     }
   
     const formData = this.registerForm.value;
+    
     console.log('Datos enviados:', formData); // Verifica los datos enviados
   
     await this.loadingService.showLoading();

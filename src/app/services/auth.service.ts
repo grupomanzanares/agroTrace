@@ -24,14 +24,16 @@ export class AuthService {
     );
   }
 
-  saveToken(token: string, userName: string): void {
+  saveToken(token: string, userName: string, rol: string): void {
     localStorage.setItem('token', token);
-    localStorage.setItem('userName', userName)
+    localStorage.setItem('userName', userName);
+    localStorage.setItem('rol', rol)
   }
 
   logout(): void {
     localStorage.removeItem('token')
     localStorage.removeItem('userName')
+    localStorage.removeItem('rol')
     this.router.navigate(['/auth'])
   }
 
@@ -46,6 +48,7 @@ export class AuthService {
   register(userData: any): Observable<any> {
     const url = `${this.apiUrl}auth/register`;
     const headers = { 'Content-Type': 'application/json' };
+    console.log(userData)
     return this.http.post<any>(url, userData, { headers }).pipe(
       catchError((error) => {
         console.error('Error en el registro:', error);
@@ -53,10 +56,6 @@ export class AuthService {
       })
     );
   }
-
-
-
-  
 
   /** Enviar solicitud de recuperación de contraseña */
   forgotPassword(identificacion: number, email: string): Observable<any> {

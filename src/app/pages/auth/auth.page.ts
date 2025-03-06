@@ -51,8 +51,9 @@ export class AuthPage implements OnInit {
         // Valida que el token esté presente en la respuesta
         if (response.token) {
           const userName = response.user?.name || 'Usuario';
+          const rol = response.user?.rolId
           this.toastService.presentToast(`Bienvenid@ ${userName}`, 'success', 'top');
-          this.authService.saveToken(response.token, userName); // Guarda el token en localStorage
+          this.authService.saveToken(response.token, userName, rol); // Guarda el token en localStorage
           this.router.navigate(['home']); // Redirige al usuario
           this.loginForm.reset(); // Limpia el formulario
         } else {
