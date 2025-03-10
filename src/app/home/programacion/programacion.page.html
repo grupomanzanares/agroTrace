@@ -116,24 +116,24 @@
         <tr *ngFor="let datos of filteredProma">
           <td>{{ datos.id }}</td>
           <td>{{ datos.programacion }}</td>
-          <td>{{ datos.sucursalnom }}</td>
+          <td>{{ datos.sucursal.nombre }}</td>
           <td>{{ datos.fecha }}</td>
-          <td>{{ datos.fincanom }}</td>
+          <td>{{ datos.finca.nombre }}</td>
           <td>{{ datos.lote }}</td>
           <td>{{ datos.trabajadornom }}</td>
-          <td>{{ datos.responsablenom }}</td>
-          <td>{{ datos.activinom }}</td>
+          <td>{{ datos.responsable.name }}</td>
+          <td>{{ datos.actividad.nombre }}</td>
           <td>{{ datos.jornal }}</td>
           <td>{{ datos.cantidades }}</td>
           <td>
-            <div class="status-indicator" [ngClass]="getEstadoClass(datos.estadonom)">
-              {{ datos.estadonom }}
+            <div class="status-indicator" [ngClass]="getEstadoClass(datos.estado.nombre)">
+              {{ datos.estado.nombre }}
               <span></span>
             </div>
           </td>
           <td>
-            <div class="priority-indicator" [ngClass]="getPrioridadClass(datos.prioridadnom)">
-              {{ datos.prioridadnom }}
+            <div class="priority-indicator" [ngClass]="getPrioridadClass(datos.prioridad.nombre)">
+              {{ datos.prioridad.nombre }}
               <span></span>
             </div>
           </td>

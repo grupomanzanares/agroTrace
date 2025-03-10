@@ -109,12 +109,12 @@ export class ProgramacionPage implements OnInit {
       next: (data) => {
         this.proma = data.map((item) => ({
           ...item,
-          sucursalnom: this.getSucursalNombre(item.sucursalId),
-          activinom: this.getActividadNom(item.actividadId),
-          fincanom: this.getFincaNom(item.fincaId),
-          estadonom: this.getEstNom(item.estadoId),
-          prioridadnom: this.getProNom(item.prioridadId),
-          responsablenom: this.getUsuNom(item.responsableId),
+          sucursal: item.sucursal || { nombre: '' },
+          actividad: item.actividad || { nombre: '' },
+          finca: item.finca || { nombre: '' },
+          estado: item.estado || { nombre: '' },
+          prioridad: item.prioridad || { nombre: '' },
+          responsable: item.responsable || { name: '' },
           trabajadornom: this.getTraNom(item.trabajador),
           originalFecha: new Date(item.fecha), // Almacena el valor original como Date
           originalFecSincronizacion: new Date(item.fecSincronizacion),
@@ -143,45 +143,6 @@ export class ProgramacionPage implements OnInit {
   }
 
   // Métodos para obtener nombres
-  getSucursalNombre(id: number): string {
-    const sucursal = this.sucursales.find((s) => s.id === id);
-    if (!sucursal) {
-      return 'Desconocido';
-    }
-    return sucursal.nombre;
-  }
-
-  getActividadNom(id: number): string {
-    const activi = this.actividades.find((a) => a.id === id);
-    if (!activi) {
-      return 'Desconocido';
-    }
-    return activi.nombre;
-  }
-
-  getFincaNom(id: number): string {
-    const finca = this.fincas.find((f) => f.id === id);
-    if (!finca) {
-      return 'Desconocido';
-    }
-    return finca.nombre;
-  }
-
-  getEstNom(id: number): string {
-    const estado = this.estados.find((e) => e.id === id)
-    if (!estado) {
-      return 'Desconocido';
-    }
-    return estado.nombre
-  }
-
-  getProNom(id: number): string {
-    const prio = this.prioridades.find((p) => p.id === id)
-    if (!prio) {
-      return 'Desconocido'
-    }
-    return prio.nombre
-  }
 
   getTraNom(id: number): string {
     const tra = this.trabajadores.find((p) => p.id === id)
@@ -520,18 +481,18 @@ export class ProgramacionPage implements OnInit {
     const dataToExport = this.filteredProma.map(item => ({
       ID: item.id,
       Programacion: item.programacion,
-      Sucursal: item.sucursalnom,
+      Sucursal: item.sucursal.nombre,
       Fecha: item.fecha,
-      Finca: item.fincanom,
+      Finca: item.finca.nombre,
       Lote: item.lote,
       Trabajador: item.trabajadornom,
-      Responsable: item.responsablenom,
-      Actividad: item.activinom,
+      Responsable: item.responsable.name,
+      Actividad: item.actividad.nombre,
       Jornal: item.jornal,
       Cantidad: item.cantidades,
       Observacion: item.observacion,
-      Estado: item.estadonom,
-      Prioridad: item.prioridadnom,
+      Estado: item.estado.nombre,
+      Prioridad: item.prioridad.nombre,
       Habilitado: item.habilitado,
       Sincronizado: item.sincronizado,
       "Fecha Sincronizado": item.fecSincronizacion,

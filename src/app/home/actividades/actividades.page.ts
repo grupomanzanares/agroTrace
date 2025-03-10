@@ -77,7 +77,6 @@ export class ActividadesPage implements OnInit {
   getUnidad() {
     this.unidadService.getUnidad().subscribe({
       next: (data) => {
-        // console.log('Datos de Unidades', data);
         this.unidad = data;
       },
       error: (error) => {

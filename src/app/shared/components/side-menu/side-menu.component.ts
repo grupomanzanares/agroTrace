@@ -12,28 +12,27 @@ export class SideMenuComponent implements OnInit {
   constructor() {}
 
   ngOnInit() {
-    this.updateMenuItems(); // Inicializar opciones del menú
+    const rol = localStorage.getItem('rol')
+    this.updateMenuItems(rol); // Inicializar opciones del menú
   }
 
-  updateMenuItems() {
+  updateMenuItems(rol: string) {
     switch (this.section) {
       case 'actividades':
         this.menuItems = [
           { label: 'Inicio', icon: 'home-outline', route: '/home' },
+          // { label: 'Usuarios', icon: 'people-outline', route: '/home/usuario' },
           { label: 'Categoría', icon: 'layers-outline', route: '/home/categoria' },
           { label: 'Sub Categoria', icon: 'grid-outline', route: '/home/subcategoria' },
-          { label: 'Actividad', icon: 'clipboard-outline', route: '/home/actividades' },
-          { label: 'Trabajador', icon: 'people-outline', route: '/home/empleados' },
           { label: 'Unidad de Medida', icon: 'speedometer-outline', route: '/home/uni-medida' },
+          { label: 'Actividad', icon: 'clipboard-outline', route: '/home/actividades' },
+          { label: 'Trabajador', icon: 'person-outline', route: '/home/empleados' },
           { label: 'Programacion', icon: 'calendar-outline', route: '/home/programacion' }
         ];
-        break;
 
-      case 'sucursales':
-        this.menuItems = [
-          { label: 'Inicio', icon: 'home-outline', route: '/home' },
-          { label: 'Crear Sucursal', icon: 'add-circle-outline', route: '/home/sucursales/crear' },
-        ];
+        if (rol === '1' || rol === '2') {
+          this.menuItems.push({ label: 'Usuarios', icon: 'people-outline', route: '/home/usuario' });
+        }
         break;
 
       default:

@@ -54,15 +54,6 @@ export class CategoriaPage implements OnInit {
     this.inputs.reset()
   }
 
-
-  getSucNom(id: number): string {
-    const sucursal = this.sucursales.find((s) => s.id === id);
-    if (!sucursal) { // Llama a una función controlada para recargar o manejar el problema
-      return 'Desconocido';
-    }
-    return sucursal.nombre;
-  }
-  
   getSucursales() {
     this.sucursalService.getSucursal().subscribe({
       next: (data) => {
@@ -75,20 +66,18 @@ export class CategoriaPage implements OnInit {
     });
   }
 
-  getCategorias() {
-    this.categoriaService.getCategoria().subscribe({
-      next: (data) => {
-        // console.log('Categorias', data)
-        this.categorias = data.map((item) => ({
-          ...item,
-          sucursalnom: this.getSucNom(item.sucursalId)
-        }));
-      },
-      error: (error) => {
-        console.error('Error al cargar las categorias', error)
-      }
-    });
+  async getCategorias() {
+    try {
+      this.categoriaService.getCategoria().subscribe({
+        next: (data) => {
+          this.categorias = data
+        }
+      })
+    } catch (error) {
+      console.error('Error al cargar las categorías', error);
+    }
   }
+  
 
   createOrUpdate() {
     if (this.inputs.valid) {

@@ -23,8 +23,7 @@ export class SignUpPage implements OnInit {
     name: new FormControl(null, [Validators.minLength(4), Validators.pattern('^[a-zA-Z\\s]*$')]),
     email: new FormControl(null, [Validators.email]), 
     celphone: new FormControl(null, [Validators.minLength(10), Validators.maxLength(10), Validators.pattern('^[0-9]*$')]),
-    password: new FormControl(null, [Validators.required, Validators.minLength(10), Validators.maxLength(18)]),
-    rolId: new FormControl(3)
+    password: new FormControl(null, [Validators.required, Validators.minLength(10), Validators.maxLength(18)])
   });
   
   constructor(

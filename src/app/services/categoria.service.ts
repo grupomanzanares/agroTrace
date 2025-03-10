@@ -19,7 +19,7 @@ export class CategoriaService {
     const headers = new HttpHeaders({
       Authorization: `Bearer ${token}`
     })
-    const body = {};
+
     return this.http.get<any>(url, { headers }).pipe(
       catchError((error) => {
         console.error('Error en la autenticaccion: ', error)
