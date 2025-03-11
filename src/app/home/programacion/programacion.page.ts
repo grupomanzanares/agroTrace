@@ -38,8 +38,8 @@ export class ProgramacionPage implements OnInit {
   // Filtros
   filterStartDate: string = '';
   filterEndDate: string = '';
-  filterSucursal: number | null = null;
-  filterFinca: number | null = null;
+  filterSucursal: string | null = null;
+  filterFinca: string | null = null;
 
   public inputs = new FormGroup({
     sucursalId: new FormControl(null, [Validators.required]),
@@ -407,35 +407,42 @@ export class ProgramacionPage implements OnInit {
   applyFilters() {
     if (this.filterStartDate && this.filterEndDate) {
       const startDate = new Date(this.filterStartDate);
-      startDate.setHours(0, 0, 0, 0); // Asegura inicio del día
-
+      startDate.setHours(0, 0, 0, 0);
+  
       const endDate = new Date(this.filterEndDate);
-      endDate.setHours(23, 59, 59, 999); // Asegura el final del día
-
+      endDate.setHours(23, 59, 59, 999);
+  
       if (startDate > endDate) {
         this.toastService.presentToast('La fecha de inicio no puede ser mayor que la fecha de fin', 'danger', 'top');
         return;
       }
     }
-
+    
     this.filteredProma = this.proma.filter((item) => {
-      const itemDate = new Date(item.originalFecha); // Usar la fecha original
-      itemDate.setHours(12, 0, 0, 0); // Normalizar a medio día para evitar desfases por zona horaria
-
-      const matchesStartDate = !this.filterStartDate || itemDate >= new Date(this.filterStartDate);
-      const matchesEndDate = !this.filterEndDate || itemDate <= new Date(this.filterEndDate);
-      const matchesSucursal = !this.filterSucursal || item.sucursalId === this.filterSucursal;
-      const matchesFinca = !this.filterFinca || item.fincaId === this.filterFinca;
-
-      return matchesStartDate && matchesEndDate && matchesSucursal && matchesFinca;
+      const itemDate = new Date(item.originalFecha);
+      itemDate.setHours(12, 0, 0, 0);
+  
+      // Normalización de texto para evitar errores de comparación
+      const sucursalFiltro = this.filterSucursal ? this.filterSucursal.trim().toLowerCase() : null;
+      const fincaFiltro = this.filterFinca ? this.filterFinca.trim().toLowerCase() : null;
+  
+      const sucursalItem = item.sucursal && item.sucursal.nombre ? item.sucursal.nombre.trim().toLowerCase() : null;
+      const fincaItem = item.finca && item.finca.nombre ? item.finca.nombre.trim().toLowerCase() : null;
+  
+      // console.log(`Comparando item: ${item.id}, Sucursal: ${sucursalItem}, Finca: ${fincaItem}`);
+  
+      const matchesSucursal = !sucursalFiltro || sucursalItem === sucursalFiltro;
+      const matchesFinca = !fincaFiltro || fincaItem === fincaFiltro;
+  
+      return matchesSucursal && matchesFinca;
     });
-
+  
+    console.log('Resultados filtrados:', this.filteredProma);
+  
     if (this.filteredProma.length === 0) {
       this.toastService.presentToast('No se encontraron resultados con los filtros aplicados', 'warning', 'top');
-    } else {
-      console.log('Datos filtrados:', this.filteredProma);
     }
-  }
+  }  
 
   onDateChange(type: 'form' | 'start' | 'end', value: string | string[]) {
     console.log('Fecha recibida en onDateChange:', value);

@@ -45,7 +45,7 @@
             <ion-label position="stacked">Sucursal</ion-label>
             <ion-select class="ion-margin-top" interface="popover" [(ngModel)]="filterSucursal"
               placeholder="Selecciona sucursal">
-              <ion-select-option *ngFor="let sucursal of sucursales" [value]="sucursal.id">
+              <ion-select-option *ngFor="let sucursal of sucursales" [value]="sucursal.nombre">
                 {{ sucursal.nombre }}
               </ion-select-option>
             </ion-select>
@@ -57,7 +57,7 @@
             <ion-label position="stacked">Finca</ion-label>
             <ion-select class="ion-margin-top" interface="popover" [(ngModel)]="filterFinca"
               placeholder="Selecciona una finca">
-              <ion-select-option *ngFor="let finca of fincas" [value]="finca.id">
+              <ion-select-option *ngFor="let finca of fincas" [value]="finca.nombre">
                 {{ finca.nombre }}
               </ion-select-option>
             </ion-select>
