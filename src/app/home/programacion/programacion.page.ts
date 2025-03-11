@@ -125,7 +125,7 @@ export class ProgramacionPage implements OnInit {
           cantidades: item.cantidad * item.signo
         }));
         this.filteredProma = [...this.proma];
-        console.log('Programaciones:', this.proma);
+        // console.log('Programaciones:', this.proma);
       },
       error: (error) => {
         console.error('Error al cargar la programación:', error);
@@ -163,7 +163,7 @@ export class ProgramacionPage implements OnInit {
   getSucursales() {
     this.sucursal.getSucursal().subscribe({
       next: (data) => {
-        console.log('Sucursales cargadas:', data);
+        // console.log('Sucursales cargadas:', data);
         this.sucursales = data;
       },
       error: (error) => {
@@ -176,7 +176,7 @@ export class ProgramacionPage implements OnInit {
   getActividad() {
     this.actividad.getActividad().subscribe({
       next: (data) => {
-        console.log('Datos de Actividades:', data);
+        // console.log('Datos de Actividades:', data);
         this.actividades = data;
       },
       error: (error) => {
@@ -189,7 +189,7 @@ export class ProgramacionPage implements OnInit {
   getpro() {
     this.programacion.getProgramacion().subscribe({
       next: (data) => {
-        console.log('Pro cargada', data)
+        // console.log('Pro cargada', data)
       }
     })
   }
@@ -197,7 +197,7 @@ export class ProgramacionPage implements OnInit {
   getFinca() {
     this.finca.getFinca().subscribe({
       next: (data) => {
-        console.log('Datos de fincas', data);
+        // console.log('Datos de fincas', data);
         this.fincas = data;
       },
       error: (error) => {
@@ -210,7 +210,7 @@ export class ProgramacionPage implements OnInit {
   getEstado() {
     this.estado.getEstado().subscribe({
       next: (data) => {
-        console.log('Dato de estado:', data)
+        // console.log('Dato de estado:', data)
         this.estados = data
       },
       error: (error) => {
@@ -223,7 +223,7 @@ export class ProgramacionPage implements OnInit {
   getPrioridad() {
     this.prioridad.getPrioridad().subscribe({
       next: (data) => {
-        console.log('Dato de prioridad', data)
+        // console.log('Dato de prioridad', data)
         this.prioridades = data
       },
       error: (error) => {
@@ -235,7 +235,7 @@ export class ProgramacionPage implements OnInit {
   getTrabajadores() {
     this.trabajador.getTrabajador().subscribe({
       next: (data) => {
-        console.log('Datos de trabajadores', data)
+        // console.log('Datos de trabajadores', data)
         this.trabajadores = data
       },
       error: (error) => {
@@ -247,7 +247,7 @@ export class ProgramacionPage implements OnInit {
   getResponsables() {
     this.usuario.getUsers().subscribe({
       next: (data) => {
-        console.log('Datos de usuarios ', data)
+        // console.log('Datos de usuarios ', data)
         this.usuarios = data
       }, error: (error) => {
         console.error('Error al traer a los usuarios')

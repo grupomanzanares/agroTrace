@@ -30,7 +30,7 @@ export class SideMenuComponent implements OnInit {
           { label: 'Programacion', icon: 'calendar-outline', route: '/home/programacion' }
         ];
 
-        if (rol === '1' || rol === '2') {
+        if (rol === '1') {
           this.menuItems.push({ label: 'Usuarios', icon: 'people-outline', route: '/home/usuario' });
         }
         break;
