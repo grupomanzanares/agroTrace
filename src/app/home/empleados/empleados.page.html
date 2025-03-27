@@ -58,6 +58,7 @@
 
         <ion-col size="12">
           <ion-item>
+            <ion-label position="floating" *ngIf="selectTrabajador">Tipo de documento</ion-label>
             <ion-select interface="popover" placeholder="Selecciona tu tipo de documento"
               formControlName="tipoIdentificacion">
               <ion-select-option *ngFor="let item of identificacion" [value]="item.id">

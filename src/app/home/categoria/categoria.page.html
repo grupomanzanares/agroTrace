@@ -8,11 +8,12 @@
         <ion-col size="6" *ngFor="let item of categorias">
           <ion-card>
             <ion-card-header>
-              <ion-card-title>{{ item.nombre }}</ion-card-title>  
+              <ion-card-title>{{ item.nombre }}</ion-card-title>
             </ion-card-header>
             <ion-card-content>
               <strong>ID: </strong>{{ item.id }}
-              <p><strong>Descripcion:</strong> {{ item.descripcion }} <br><strong>Sucursal: </strong> {{ item.sucursal.nombre }}</p>
+              <p><strong>Descripcion:</strong> {{ item.descripcion }} <br><strong>Sucursal: </strong> {{
+                item.sucursal.nombre }}</p>
             </ion-card-content>
             <ion-row class="ion-justify-content-center">
               <ion-col size="auto">
@@ -63,6 +64,7 @@
               </ion-col>
               <ion-col size="12">
                 <ion-item class="ion-margin">
+                  <ion-label position="floating" *ngIf="selectedCategoria">Sucursal</ion-label>
                   <ion-select interface="popover" placeholder="Seleccionar Sucursal"
                     [formControl]="inputs.controls.sucursalId">
                     <ion-select-option *ngFor="let sucursal of sucursales" [value]="sucursal.id">

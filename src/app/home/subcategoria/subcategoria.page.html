@@ -63,6 +63,7 @@
 
               <ion-col size="12">
                 <ion-item class="ion-margin">
+                  <ion-label position="floating" *ngIf="selectedSub">Categoria</ion-label>
                   <ion-select interface="popover" placeholder="Selecciona una categoria"
                     [formControl]="inputs.controls.categoriaId">
                     <ion-select-option *ngFor="let item of categorias" [value]="item.id">

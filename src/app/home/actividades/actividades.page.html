@@ -21,8 +21,8 @@
                 {{ item.controlPorTrabajador ? 'Sí' : 'No' }}
               </p>
               <p><strong>Unidad:</strong> {{ item.unidad.nombre }}</p>
-              <p><strong>Categoria:</strong> {{ item.subcategoria.categoria.nombre }}</p>
               <p><strong>Subcategoría:</strong> {{ item.subcategoria.nombre }}</p>
+              <p><strong>Categoria:</strong> {{ item.subcategoria.categoria.nombre }}</p>
             </ion-card-content>
             <ion-row class="ion-justify-content-center">
               <ion-col size="auto">
@@ -50,7 +50,7 @@
             </app-custom-input>
             <div class="error" *ngIf="inputs.controls.nombre.errors && inputs.controls.nombre.touched">
               <span *ngIf="inputs.controls.nombre.errors?.['required']">El nombre es obligatorio</span>
-              <span *ngIf="inputs.controls.nombre.errors?.['minlength']">Debe tener al menos 3 caracteres</span>
+              <span *ngIf="inputs.controls.nombre.errors?.['minlength']">Debe tener al menos 5 caracteres</span>
             </div>
           </ion-col>
 
@@ -87,6 +87,7 @@
 
           <ion-col size="12">
             <ion-item>
+              <ion-label position="floating" *ngIf="selectedActividad">Unidad</ion-label>
               <ion-select interface="popover" placeholder="Seleccionar Unidad" formControlName="unidadId">
                 <ion-select-option *ngFor="let row of unidad" [value]="row.id">
                   {{ row.nombre }}
@@ -100,9 +101,10 @@
           
           <ion-col size="12">
             <ion-item>
+              <ion-label position="floating" *ngIf="selectedActividad">Sub categoria</ion-label>
               <ion-select interface="popover" placeholder="Selecciona Sub Categoría" formControlName="subCategoriaId">
                 <ion-select-option *ngFor="let row of subcategoria" [value]="row.id">
-                  {{ row.nombre }}
+                  {{ row.nombre }} - {{ row.categoria.nombre }}
                 </ion-select-option>
               </ion-select>
             </ion-item>
