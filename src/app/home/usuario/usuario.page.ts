@@ -44,8 +44,8 @@ export class UsuarioPage implements OnInit {
   getUsuarios() {
     this.usuarioService.getUsers().subscribe({
       next: (data) => {
-        console.log('Datos de usuarios ', data)
-        this.usuarios = data
+        this.usuarios = data.filter((item: any) => item.state === true || item.state === 'true');
+        console.log('Datos de usuarios ', this.usuarios)
       }, error: (error) => {
         console.error('Error al traer a los usuarios', error)
       }

@@ -43,7 +43,7 @@ export class EmpleadosPage implements OnInit {
   getTrabajador() {
     this.trabajorService.getTrabajador().subscribe({
       next: (data) => {
-        this.trabajadores = data
+        this.trabajadores = data.filter((item: any) => item.habilitado === true)
         console.log(data)
       },
       error: (error) => {
