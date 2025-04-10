@@ -19,7 +19,7 @@ export class EmpleadosPage implements OnInit {
   public identificacion: any[] = []
 
   public inputs = new FormGroup({
-    nit: new FormControl('', [Validators.required, Validators.minLength(8), Validators.maxLength(10), Validators.pattern('^[0-9]*$')]),
+    nit: new FormControl('', [Validators.required, Validators.minLength(6), Validators.maxLength(10), Validators.pattern('^[0-9]*$')]),
     nombre: new FormControl(null, [Validators.minLength(4), Validators.pattern('^[a-zA-Z\\s]*$')]),
     tipoIdentificacion: new FormControl(null, [Validators.required])
   })
