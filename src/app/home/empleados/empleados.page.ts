@@ -31,7 +31,7 @@ export class EmpleadosPage implements OnInit {
     this.getTpIdentificacion()
   }
 
-  onShowForm () {
+  onShowForm() {
     this.showForm = true
   }
 
@@ -63,7 +63,7 @@ export class EmpleadosPage implements OnInit {
     })
   }
 
-  createOrUpdate () {
+  createOrUpdate() {
     if (this.inputs.valid) {
       const trabajadorData: any = {
         ...this.inputs.value,
@@ -85,6 +85,7 @@ export class EmpleadosPage implements OnInit {
           const message = this.update ? 'Trabajador actualizado exitosamente' : 'Trabajador creado exitosamente'
           this.toastService.presentToast(message, 'success', 'top');
           this.showForm = false;
+          this.inputs.reset()
           this.getTrabajador();
           this.update = false;
         },
