@@ -26,6 +26,20 @@ export class ProgramacionService {
     )
   }
 
+  getProgramaciontra(): Observable<any>{
+    const url = `${this.apiUrl}programacion_trabajadores`
+    const token = localStorage.getItem('token')
+    const headers = new HttpHeaders({
+      Authorization: `Bearer ${token}`
+    })
+    return this.http.get<any>(url, { headers }).pipe(
+      catchError((error) => {
+        console.error('Error en la autenticaccion: ', error)
+        return throwError(() => new Error('Error en el login. Intente nuevamente'))
+      })
+    )
+  }
+
   create(programacion: any): Observable<any> {
     const url = `${this.apiUrl}programacion/create`
     const token = localStorage.getItem('token')

@@ -29,6 +29,7 @@ export class ProgramacionPage implements OnInit {
   prioridades: any[] = [];
   trabajadores: any[] = []
   usuarios: any[] = []
+  promatra: any[] = []
   userRol = localStorage.getItem('rol')
   public showForm: boolean;
   public edit: boolean = false;
@@ -70,6 +71,7 @@ export class ProgramacionPage implements OnInit {
 
   ngOnInit() {
     this.getpro()
+    this.getproma()
     this.getSucursales();
     this.getFinca();
     this.getActividad();
@@ -115,7 +117,7 @@ export class ProgramacionPage implements OnInit {
           estado: item.estado || { nombre: '' },
           prioridad: item.prioridad || { nombre: '' },
           responsable: item.responsable || { name: '' },
-          trabajadornom: this.getTraNom(item.trabajador),
+          trabajadores: item.trabajadores || [],
           originalFecha: new Date(item.fecha), // Almacena el valor original como Date
           originalFecSincronizacion: new Date(item.fecSincronizacion),
           fecha: this.formatDate(item.fecha), // Formato para visualización
@@ -132,6 +134,15 @@ export class ProgramacionPage implements OnInit {
         this.toastService.presentToast('Error al cargar la programación', 'danger', 'top');
       },
     });
+  }
+
+  getproma() {
+    this.programacion.getProgramaciontra().subscribe({
+      next: (data) => {
+        this.promatra = data
+        console.log(this.promatra)
+      }
+    })
   }
 
   private formatDate(dateString: string): string {
@@ -189,7 +200,7 @@ export class ProgramacionPage implements OnInit {
   getpro() {
     this.programacion.getProgramacion().subscribe({
       next: (data) => {
-        // console.log('Pro cargada', data)
+        console.log('Pro cargada', data)
       }
     })
   }
@@ -492,7 +503,7 @@ export class ProgramacionPage implements OnInit {
       Fecha: item.fecha,
       Finca: item.finca.nombre,
       Lote: item.lote,
-      Trabajador: item.trabajadornom,
+      Trabajadores: item.trabajadores.map(t => t.nombre).join(', '),
       Responsable: item.responsable.name,
       Actividad: item.actividad.nombre,
       Jornal: item.jornal,
@@ -517,7 +528,7 @@ export class ProgramacionPage implements OnInit {
 
     const excelBuffer = XLSX.write(workbook, { bookType: 'xlsx', type: 'array' });
     const data = new Blob([excelBuffer], { type: 'application/octet-stream' });
-    saveAs(data, 'datos_filtrados.xlsx');
+    saveAs(data, 'Programaciones.xlsx');
 
     this.toastService.presentToast('Datos filtrados exportados con éxito', 'success', 'top');
   }
