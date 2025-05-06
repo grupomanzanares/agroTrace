@@ -239,15 +239,15 @@
               <div class="error" *ngIf="inputs.controls.fecha.errors && inputs.controls.fecha.touched">
                 <span *ngIf="inputs.controls.fecha.errors?.['required']">La fecha es obligatoria</span>
               </div>
-
             </ion-col>
+
             <ion-col size="12">
               <ion-item class="ion-margin">
                 <ion-label position="floating" *ngIf="selecProgramacion">Actividad</ion-label>
-                <ion-select interface="popover" placeholder="Selecciona la Actividad"
+                <ion-select class="select-actividad" interface="alert" placeholder="Selecciona la Actividad"
                   [formControl]="inputs.controls.actividadId">
                   <ion-select-option *ngFor="let actividad of actividades" [value]="actividad.id">
-                    {{ actividad.nombre }}
+                    {{ actividad.nombre }} - {{ actividad.unidad?.nombre }}
                   </ion-select-option>
                 </ion-select>
               </ion-item>
@@ -255,6 +255,7 @@
                 <samp *ngIf="inputs.controls.actividadId.errors?.['required']">La actividad es obligatoria</samp>
               </div>
             </ion-col>
+
             <ion-col size="12">
               <ion-item class="ion-margin">
                 <ion-label position="floating" *ngIf="selecProgramacion">Prioridad</ion-label>

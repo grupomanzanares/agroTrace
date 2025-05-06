@@ -132,6 +132,20 @@ h3 {
 }
 
 
+.select-actividad::part(popover) {
+    width: 400px; /* o lo que necesites */
+    max-width: 100%;
+  }
+  
+  ion-select::part(text) {
+    white-space: normal;
+  }
+  
+  ion-select-option {
+    white-space: normal;
+  }
+  
+
 /* Media Queries para Pantallas Pequeñas */
 @media screen and (max-width: 768px) {
     .sync-table {

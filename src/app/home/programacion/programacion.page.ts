@@ -187,7 +187,7 @@ export class ProgramacionPage implements OnInit {
   getActividad() {
     this.actividad.getActividad().subscribe({
       next: (data) => {
-        // console.log('Datos de Actividades:', data);
+        console.log('Datos de Actividades:', data);
         this.actividades = data;
       },
       error: (error) => {
