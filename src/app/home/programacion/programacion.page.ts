@@ -416,40 +416,50 @@ export class ProgramacionPage implements OnInit {
 
   // Nueva función para aplicar filtros
   applyFilters() {
+    let filtered = this.proma;
+
+    // Filtro por fechas
     if (this.filterStartDate && this.filterEndDate) {
       const startDate = new Date(this.filterStartDate);
       startDate.setHours(0, 0, 0, 0);
-  
+
       const endDate = new Date(this.filterEndDate);
       endDate.setHours(23, 59, 59, 999);
-  
+
       if (startDate > endDate) {
         this.toastService.presentToast('La fecha de inicio no puede ser mayor que la fecha de fin', 'danger', 'top');
         return;
       }
+
+      filtered = filtered.filter(item => {
+        const itemDate = new Date(item.originalFecha);
+        itemDate.setHours(12, 0, 0, 0);
+        return itemDate >= startDate && itemDate <= endDate;
+      });
     }
-    
-    this.filteredProma = this.proma.filter((item) => {
-      const itemDate = new Date(item.originalFecha);
-      itemDate.setHours(12, 0, 0, 0);
-  
-      // Normalización de texto para evitar errores de comparación
-      const sucursalFiltro = this.filterSucursal ? this.filterSucursal.trim().toLowerCase() : null;
-      const fincaFiltro = this.filterFinca ? this.filterFinca.trim().toLowerCase() : null;
-  
-      const sucursalItem = item.sucursal && item.sucursal.nombre ? item.sucursal.nombre.trim().toLowerCase() : null;
-      const fincaItem = item.finca && item.finca.nombre ? item.finca.nombre.trim().toLowerCase() : null;
-  
-      // console.log(`Comparando item: ${item.id}, Sucursal: ${sucursalItem}, Finca: ${fincaItem}`);
-  
-      const matchesSucursal = !sucursalFiltro || sucursalItem === sucursalFiltro;
-      const matchesFinca = !fincaFiltro || fincaItem === fincaFiltro;
-  
-      return matchesSucursal && matchesFinca;
-    });
-  
+
+    // Filtro por sucursal
+    if (this.filterSucursal) {
+      const sucursalFiltro = this.filterSucursal.trim().toLowerCase();
+      filtered = filtered.filter(item => {
+        const sucursalItem = item.sucursal && item.sucursal.nombre ? item.sucursal.nombre.trim().toLowerCase() : null;
+        return sucursalItem === sucursalFiltro;
+      });
+    }
+
+    // Filtro por finca
+    if (this.filterFinca) {
+      const fincaFiltro = this.filterFinca.trim().toLowerCase();
+      filtered = filtered.filter(item => {
+        const fincaItem = item.finca && item.finca.nombre ? item.finca.nombre.trim().toLowerCase() : null;
+        return fincaItem === fincaFiltro;
+      });
+    }
+
+    this.filteredProma = filtered;
+
     console.log('Resultados filtrados:', this.filteredProma);
-  
+
     if (this.filteredProma.length === 0) {
       this.toastService.presentToast('No se encontraron resultados con los filtros aplicados', 'warning', 'top');
     }
