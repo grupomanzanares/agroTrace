@@ -19,8 +19,8 @@ export class ResetPasswordPage implements OnInit {
   token: string = '';
 
   public resetPasswordForm = new FormGroup({ 
-    password: new FormControl(null, [Validators.required, Validators.minLength(10), Validators.maxLength(18)]),
-    confirmPassword: new FormControl(null, [Validators.required, Validators.minLength(10), Validators.maxLength(18)]),
+    password: new FormControl(null, [Validators.required, Validators.minLength(10), Validators.maxLength(16)]),
+    confirmPassword: new FormControl(null, [Validators.required, Validators.minLength(10), Validators.maxLength(16)]),
     
 });  
   
