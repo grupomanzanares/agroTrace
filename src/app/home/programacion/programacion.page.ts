@@ -81,7 +81,7 @@ export class ProgramacionPage implements OnInit {
     this.getTrabajadores()
     this.getResponsables()
     const today = new Date().toISOString().slice(0, 10);
-    this.inputs.controls.fecha.setValue(today)
+    // this.inputs.controls.fecha.setValue(today)
     this.filterStartDate = today;
     this.filterEndDate = today;  
   }
@@ -120,7 +120,7 @@ export class ProgramacionPage implements OnInit {
           trabajadores: item.trabajadores || [],
           originalFecha: new Date(item.fecha), // Almacena el valor original como Date
           originalFecSincronizacion: new Date(item.fecSincronizacion),
-          fecha: this.formatDate(item.fecha), // Formato para visualización
+          fecha: item.fecha, // Formato para visualización
           fecSincronizacion: this.formatDate(item.fecSincronizacion),
           createdAt: this.formatDate(item.createdAt),
           updatedAt: this.formatDate(item.updatedAt),

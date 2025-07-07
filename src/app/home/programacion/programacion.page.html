@@ -117,7 +117,7 @@
           <td>{{ datos.id }}</td>
           <td>{{ datos.programacion }}</td>
           <td>{{ datos.sucursal.nombre }}</td>
-          <td>{{ datos.fecha }}</td>
+          <td>{{ datos.fecha | date:'dd/MM/yyyy':'UTC' }}</td>
           <td>{{ datos.finca.nombre }}</td>
           <td>{{ datos.lote }}</td>
           <td>
